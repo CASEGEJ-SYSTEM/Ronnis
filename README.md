@@ -1,2 +1,4 @@
 # Ronnis
-Pagina web de Administración de Gimnasio.
+Pagina web de administración de gimnasio
+
+, prueba
