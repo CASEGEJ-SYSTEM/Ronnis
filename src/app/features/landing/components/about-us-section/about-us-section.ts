@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'app-about-us-section',
     imports: [],
     templateUrl: './about-us-section.html',
-    styleUrl: './about-us-section.css'
+    styleUrl: './about-us-section.css',
 })
 export class AboutUsSection {
 
