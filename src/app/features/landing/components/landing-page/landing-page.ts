@@ -7,7 +7,6 @@ import { Header } from '../../../../shared/components/header/header';
 import { Footer } from '../../../../shared/components/footer/footer';
 import { HeroSection } from '../hero-section/hero-section';
 import { AboutUsSection } from '../about-us-section/about-us-section';
-import { PricingSection } from '../pricing-section/pricing-section';
 import { TrainersSection } from '../trainers-section/trainers-section';
 import { LocationSection } from '../location-section/location-section';
 
@@ -21,7 +20,6 @@ import { LocationSection } from '../location-section/location-section';
         Footer,
         HeroSection,
         AboutUsSection,
-        PricingSection,
         TrainersSection,
         LocationSection
     ],
