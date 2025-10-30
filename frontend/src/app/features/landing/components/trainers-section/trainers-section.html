@@ -1,0 +1,19 @@
+<section id="trainers" class="py-24 bg-gradient-to-tr from-fuchsia-400 to-gray-900">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-6xl text-purple-300 font-rock font-bold mb-12">Personal</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            @for (trainer of trainers; track trainer.id) {
+            <div
+                class="bg-black/50 p-8 rounded-2xl shadow-lg text-left flex flex-col group hover:bg-black/70 border-3 border-black/1 hover:border-purple-400 transition-colors">
+                <img [src]="trainer.image" alt="Foto de {{ trainer.name }}"
+                    class="w-full h-72 object-cover rounded-lg mb-6 transform group-hover:scale-105 transition-transform duration-300">
+                <h3 class="text-2xl font-bold mb-2">{{ trainer.name }}</h3>
+                <p class="text-gray-400 grow mb-4">{{ trainer.description }}</p>
+                <a href="#location" class="flex gap-1 justify-center text-purple-300 font-bold self-start group-hover:text-white transition-colors">
+                    
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>

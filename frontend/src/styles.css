@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap');
+@import 'tailwindcss';
+
+@font-face {
+    font-family: 'Atomic';
+    src: url('../public/fonts/atomic-regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Atomic Extra';
+    src: url('../public/fonts/atomic-extra.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Rockybilly';
+    src: url('../public/fonts/rockybilly.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@theme {
+    --font-roboto: 'Roboto', sans-serif, system-ui;
+    --font-roboto-c: 'Roboto Condensed', sans-serif, system-ui;
+    --font-silt: 'Shadows Into Light Two', cursive;
+    --font-inter: 'Inter', sans-serif, system-ui;
+    --font-rock: 'Rock Salt', cursive;
+    --font-atomic: 'Atomic', system-ui;
+    --font-atomic-e: 'Atomic Extra', system-ui;
+    --font-rockybilly: 'Rockybilly', cursive;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    transition: all 0.3s ease;
+}

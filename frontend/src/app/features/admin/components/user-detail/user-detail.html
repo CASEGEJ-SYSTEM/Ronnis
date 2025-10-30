@@ -1,0 +1,51 @@
+<div class="container mx-auto max-w-4xl">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="text-center">
+            <h1 class="text-6xl font-extrabold mb-8">Usuario</h1>
+            <div class="relative inline-block">
+                <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
+                    class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
+                <button class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700"
+                    title="Editar foto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    </svg>
+                </button>
+                <a [routerLink]="['/admin/usuarios', user?.id, 'estadisticas']"
+                    class="absolute top-2 right-2 bg-cyan-500 p-3 rounded-full hover:bg-cyan-600"
+                    title="Ver estadísticas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="bg-white/10 p-8 rounded-2xl">
+            <form class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" [value]="user?.name.split(' ')[0]" placeholder="Nombre" class="input-field">
+                    <input type="text" [value]="user?.name.split(' ')[1]" placeholder="Apellido Paterno"
+                        class="input-field">
+                    <input type="text" [value]="user?.name.split(' ')[2]" placeholder="Apellido Materno"
+                        class="input-field">
+                    <input type="tel" [value]="user?.phone" placeholder="Número de Celular" class="input-field">
+                </div>
+                <input type="email" [value]="user?.email" placeholder="E-mail" class="input-field w-full">
+                <input type="text" value="3" placeholder="Meses Pagados" class="input-field w-full">
+                <button type="submit"
+                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    <a routerLink="/admin/usuarios" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+    </a>
+</div>

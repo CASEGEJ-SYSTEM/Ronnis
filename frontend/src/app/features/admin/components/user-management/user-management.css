@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@layer base {
+    * {}
+
+    .action-btn {
+        @apply p-2 rounded-md transition-colors hover:bg-white/10;
+    }
+}
