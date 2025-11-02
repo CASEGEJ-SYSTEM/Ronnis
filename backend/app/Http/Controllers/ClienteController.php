@@ -8,41 +8,41 @@ use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller
 {
+    // GET /api/clientes
     public function index()
     {
         $clientes = Cliente::all();
-        return view('clientes.index', compact('clientes'));
+        return response()->json($clientes);
     }
 
-    public function create()
-    {
-        return view('clientes.create');
-    }
-
+    // POST /api/clientes
     public function store(Request $request)
     {
-        $request->validate([
-            'nombres' => 'required|string',
-            'apellidos' => 'required|string',
+        $validated = $request->validate([
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
             'fecha_nacimiento' => 'required|date',
-            'telefono' => 'required|string',
+            'telefono' => 'required|string|max:20',
             'email' => 'required|email|unique:clientes,email',
             'contraseña' => 'required|string|min:6',
-            'sede' => 'required|string',
-            'status' => 'required|in:activo,inactivo',
+            'sede' => 'required|string|max:255',
         ]);
 
-        Cliente::create([
-            'nombres' => $request->nombres,
-            'apellidos' => $request->apellidos,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'telefono' => $request->telefono,
-            'email' => $request->email,
-            'contraseña' => Hash::make($request->contraseña),
-            'sede' => $request->sede,
-            'status' => $request->status,
+        $cliente = Cliente::create([
+            'nombres' => $validated['nombres'],
+            'apellidos' => $validated['apellidos'],
+            'fecha_nacimiento' => $validated['fecha_nacimiento'],
+            'telefono' => $validated['telefono'],
+            'email' => $validated['email'],
+            // ⚠️ Encriptamos la contraseña
+            'contraseña' => Hash::make($validated['contraseña']),
+            'sede' => $validated['sede'],
+            'status' => 'activo',
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
+        return response()->json([
+            'message' => 'Cliente registrado correctamente',
+            'cliente' => $cliente
+        ], 201);
     }
 }
