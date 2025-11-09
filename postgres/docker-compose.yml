@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_gym
+    restart: always
+    environment:
+      POSTGRES_DB: FactorFIT
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Casegej2025
+    ports:
+      - "6000:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
