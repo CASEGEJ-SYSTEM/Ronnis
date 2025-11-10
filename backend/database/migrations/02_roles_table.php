@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('contraseña', 60);
             $table->string('rol', 30);
 
-            // 🔗 Relación con la tabla clientes (referencia por email)
+            // Relación con la tabla clientes (referencia por email)
             $table->foreign('email')->references('email')->on('clientes')->onDelete('cascade');
         });
     }

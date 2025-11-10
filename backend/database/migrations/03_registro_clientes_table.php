@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->timestamp('fecha_pago')->nullable();
             $table->timestamps();
 
-            // 🔗 Relación con clientes
+            // Relación con clientes
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
         });
     }

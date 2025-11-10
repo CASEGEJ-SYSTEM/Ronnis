@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Rol; 
 use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller
@@ -41,13 +42,22 @@ class ClienteController extends Controller
             'qr_imagen' => 'nullable|string',
         ]);
 
+        // Encriptar contraseña
         $validated['contraseña'] = Hash::make($validated['contraseña']);
         $validated['status'] = 'activo';
 
+        // Crear cliente
         $cliente = Cliente::create($validated);
 
+        // Crear rol asociado automáticamente
+        Rol::create([
+            'email' => $cliente->email,
+            'contraseña' => $cliente->contraseña, // ya está encriptada
+            'rol' => 'cliente'
+        ]);
+
         return response()->json([
-            'message' => 'Cliente registrado correctamente',
+            'message' => 'Cliente registrado correctamente y rol asignado.',
             'cliente' => $cliente
         ], 201);
     }
@@ -74,11 +84,21 @@ class ClienteController extends Controller
             'qr_imagen' => 'nullable|string',
         ]);
 
+        // Si se actualiza la contraseña, volver a encriptarla
         if (isset($validated['contraseña'])) {
             $validated['contraseña'] = Hash::make($validated['contraseña']);
         }
 
+        // Actualizar cliente
         $cliente->update($validated);
+
+        // Si se cambió email o contraseña, actualizar también el rol
+        $rol = Rol::where('email', $cliente->email)->first();
+        if ($rol) {
+            $rol->update([
+                'contraseña' => $cliente->contraseña,
+            ]);
+        }
 
         return response()->json([
             'message' => 'Cliente actualizado correctamente',
@@ -95,9 +115,13 @@ class ClienteController extends Controller
             return response()->json(['message' => 'Cliente no encontrado'], 404);
         }
 
+        // Eliminar el rol asociado (por email)
+        Rol::where('email', $cliente->email)->delete();
+
+        // Eliminar cliente
         $cliente->delete();
 
-        return response()->json(['message' => 'Cliente eliminado correctamente']);
+        return response()->json(['message' => 'Cliente y su rol eliminado correctamente']);
     }
 
     // GET /api/clientes/buscar?sede=Puebla&status=activo
