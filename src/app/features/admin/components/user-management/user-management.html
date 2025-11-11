@@ -1,4 +1,4 @@
-<div class="container mx-auto bg-gradient-to-br from-[#4a0e4e] to-[#2b103f] p-6 rounded-2xl shadow-lg">
+<div class="container mx-auto max-w-6xl bg-black/20 backdrop-blur-sm p-8 rounded-xl shadow-xl">
     <div class="flex justify-end mb-4">
     </div>
     <div class="overflow-x-auto">
@@ -26,40 +26,13 @@
                     <td class="p-3">
                         <div class="flex justify-center space-x-2">
                             <button (click)="showQrModal(user)" class="action-btn" title="QR">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="5" height="5" x="3" y="3" rx="1" />
-                                    <rect width="5" height="5" x="16" y="3" rx="1" />
-                                    <rect width="5" height="5" x="3" y="16" rx="1" />
-                                    <path d="M21 16h-3a2 2 0 0 0-2 2v3" />
-                                    <path d="M21 21v.01" />
-                                    <path d="M12 7v3a2 2 0 0 1-2 2H7" />
-                                    <path d="M3 12h.01" />
-                                    <path d="M12 3h.01" />
-                                    <path d="M12 16h.01" />
-                                    <path d="M16 12h.01" />
-                                    <path d="M21 12h.01" />
-                                </svg>
+                                <i class="ph ph-qr-code"></i>
                             </button>
                             <a [routerLink]="['/admin/usuarios', user.id, 'editar']" class="action-btn" title="Editar">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                    <path d="m15 5 4 4" />
-                                </svg>
+                                <i class="ph ph-pencil-simple-line"></i>
                             </a>
                             <button (click)="deleteUser(user)" class="action-btn text-red-500" title="Eliminar">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M3 6h18" />
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                    <line x1="10" x2="10" y1="11" y2="17" />
-                                    <line x1="14" x2="14" y1="11" y2="17" />
-                                </svg>
+                                <i class="ph ph-trash"></i>
                             </button>
                         </div>
                     </td>

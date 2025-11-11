@@ -1,24 +1,45 @@
-<div class="container mx-auto max-w-4xl grid lg:grid-cols-2 gap-12 items-center bg-gradient-to-br from-purple-950/30 to-gray-950/30 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+<div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/20 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
     <div class="text-center">
-        <h1 class="font-atomic text-6xl mb-8">Registro</h1>
+        <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro</h1>
         <div class="flex justify-center">
             <div class="bg-black rounded-full p-4 shadow-2xl">
-                <img src="images/fitness1.webp" alt="Ilustración Fitness" class="size-60">
+                <img src="images/fitness1.webp" alt="Ilustración Fitness" class="size-70">
             </div>
         </div>
     </div>
-    <div class="p-8 rounded-2xl">
+    <div class="p-2 rounded-2xl">
         <form class="space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Nombre" class="input-field">
-                <input type="text" placeholder="Apellido Paterno" class="input-field">
-                <input type="text" placeholder="Apellido Materno" class="input-field">
-                <input type="tel" placeholder="Número de Celular" class="input-field">
+                <div>
+                    <label for="nombre" class="text-black font-medium">Nombre</label>
+                    <input type="text" id="nombre" placeholder="Andrea" class="input-field">
+                </div>
+                <div>
+                    <label for="apellido-paterno" class="text-black font-medium">Apellido paterno</label>
+                    <input type="text" id="apellido-paterno" placeholder="Báez" class="input-field">
+                </div>
+                <div>
+                    <label for="apellido-materno" class="text-black font-medium">Apellido materno</label>
+                    <input type="text" id="apellido-materno" placeholder="Castillo" class="input-field">
+                </div>
+                <div>
+                    <label for="numero" class="text-black font-medium">Número de teléfono</label>
+                    <input type="tel" id="numero" placeholder="+52 ··· ···· ···" class="input-field">
+                </div>
             </div>
-            <input type="email" placeholder="E-mail" class="input-field w-full">
+            <div>
+                <label for="email" class="text-black font-medium">Correo electrónico</label>
+                <input type="email" id="email" placeholder="abc@gmail.com" class="input-field w-full">
+            </div>
             <div class="grid md:grid-cols-2 gap-4">
-                <input type="password" placeholder="Contraseña" class="input-field">
-                <input type="text" placeholder="Meses Pagados" class="input-field">
+                <div>
+                    <label for="pass" class="text-black font-medium">Contraseña</label>
+                    <input type="password" id="pass" placeholder="* * * * * * * *" class="input-field">
+                </div>
+                <div>
+                    <label for="meses" class="text-black font-medium">Meses pagados</label>
+                    <input type="text" id="meses" placeholder="· · · · ·" class="input-field">
+                </div>
             </div>
             <button type="submit"
                 class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">Registrar</button>
