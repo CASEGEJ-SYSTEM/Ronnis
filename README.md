@@ -47,8 +47,11 @@ cd backend
 composer install
 ```
 ### Definir una migración para la tabla users:
+
+```
 php artisan make:migration create_users_table
 
+```
 ## Poner en la terminar una ves adentro de la caperta
 
 ```
