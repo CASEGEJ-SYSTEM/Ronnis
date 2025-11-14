@@ -1,27 +1,54 @@
-<div class="container mx-auto max-w-4xl grid lg:grid-cols-2 gap-12 items-center bg-gradient-to-br from-purple-950/30 to-gray-950/30 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+<div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
     <div class="text-center">
-        <h1 class="font-atomic text-6xl mb-8">Registro</h1>
+        <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro</h1>
         <div class="flex justify-center">
             <div class="bg-black rounded-full p-4 shadow-2xl">
-                <img src="images/fitness1.webp" alt="Ilustración Fitness" class="size-60">
+                <img src="images/fitness1.webp" alt="Ilustración Fitness" class="size-70">
             </div>
         </div>
     </div>
-    <div class="p-8 rounded-2xl">
-        <form class="space-y-4">
+    <div class="p-2 rounded-2xl">
+        <form class="space-y-4" (ngSubmit)="registrarCliente()" #form="ngForm">
             <div class="grid md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Nombres" class="input-field">
-                <input type="text"  placeholder="Apellidos"  class="input-field">
-                <input type="date" name="birthDate" placeholder="Fecha de Nacimiento" ngModel required  max="{{ today }}" class="input-field">
-                <input type="tel" placeholder="Número de Celular" class="input-field">
+                <div>
+                <label for="nombre" class="text-black font-medium">Nombre</label>
+                <input type="text" id="nombre" placeholder="Andrea" [(ngModel)]="cliente.nombres" name="nombres" required class="input-field">
+                </div>
+                <div>
+                <label for="apellidos" class="text-black font-medium">Apellidos</label>
+                <input type="text" id="apellidos" placeholder="Báez" [(ngModel)]="cliente.apellidos" name="apellidos" required class="input-field">
+                </div>
+                <div>
+                <label class="text-black font-medium">Fecha de Nacimiento</label>
+                <input type="date" [(ngModel)]="cliente.fecha_nacimiento" name="fecha_nacimiento" required max="{{ today }}" class="input-field">
+                </div>
+                <div>
+                <label for="numero" class="text-black font-medium">Número de teléfono</label>
+                <input type="tel" id="numero" placeholder="+52 ··· ···· ···" [(ngModel)]="cliente.telefono" name="telefono" required class="input-field">
+                </div>
             </div>
-            <input type="email" placeholder="E-mail" class="input-field w-full">
+
+            <div>
+                <label for="email" class="text-black font-medium">Correo electrónico</label>
+                <input type="email" id="email" placeholder="abc@gmail.com" [(ngModel)]="cliente.email" name="email" required class="input-field w-full">
+            </div>
+
             <div class="grid md:grid-cols-2 gap-4">
-                <input type="password" placeholder="Contraseña" class="input-field">
-                <input type="text" placeholder="Meses Pagados" class="input-field">
+                <div>
+                <label for="meses" class="text-black font-medium">Plan de pago</label>
+                <input type="text" id="meses" placeholder="· · · · ·" [(ngModel)]="cliente.plan_pago" name="plan_pago" class="input-field">
+                </div>
+                <div>
+                <label for="total" class="text-black font-medium">Total Pagado</label>
+                <input type="number" id="total" placeholder="* * * * * * * *" [(ngModel)]="cliente.total_pagado" name="total_pagado" class="input-field">
+                </div>
             </div>
+
             <button type="submit"
-                class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">Registrar</button>
+                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
+                Registrar
+            </button>
         </form>
+
     </div>
 </div>

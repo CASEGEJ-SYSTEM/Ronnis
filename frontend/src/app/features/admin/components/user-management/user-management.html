@@ -1,5 +1,5 @@
-<div class="container mx-auto bg-gradient-to-br from-[#4a0e4e] to-[#2b103f] p-6 rounded-2xl shadow-lg">
-    <div class="flex justify-end mb-4">
+<div class="container mx-auto max-w-6xl bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-xl shadow-xl text-black">
+    <div class="flex justify-end mb-4">        
     </div>
 
     <div class="overflow-x-auto">
@@ -26,15 +26,19 @@
                     </td>
 
                     <!-- Status con color -->
-                    <td class="p-3" [ngClass]="user.status === 'activo' ? 'text-green-400' : 'text-red-400'">
-                        {{ user.status }}
+                    <td class="p-3">
+                        <span [ngClass]="user.status === 'activo'
+                            ? 'bg-green-500 text-white px-2 py-1 rounded-full text-sm shadow'
+                            : 'bg-red-500 text-white px-2 py-1 rounded-full text-sm shadow'">
+                            {{ user.status }}
+                        </span>
                     </td>
 
                     <!-- Acciones -->
                     <td class="p-3">
                         <div class="flex justify-center space-x-2">
 
-                            <!-- ✅ WhatsApp dinámico -->
+                            <!-- WhatsApp dinámico -->
                             <a class="action-btn"
                                 [href]="'https://wa.me/52' + user.telefono + '?text=Hola%20' + user.nombres + '!%20Quisiera%20más%20información.'"
                                 target="_blank" title="WhatsApp">
@@ -47,7 +51,7 @@
 
                             
 
-                            <!-- ✅ Correo dinámico -->
+                            <!-- Correo dinámico -->
                             <a class="action-btn"
                                 [href]="'mailto:' + user.email + '?subject=Consulta&body=Hola%20' + user.nombres + ',%20quisiera%20más%20información.'"
                                 title="Enviar correo">
@@ -60,7 +64,7 @@
                                 </svg>
                             </a>
 
-                            <!-- ✅ QR -->
+                            <!-- QR -->
                             <button (click)="showQrModal(user)" class="action-btn" title="QR">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -79,7 +83,7 @@
                                 </svg>
                             </button>
 
-                            <!-- ✅ Editar -->
+                            <!-- Editar -->
                             <a [routerLink]="['/admin/usuarios', user.id, 'editar']" class="action-btn" title="Editar">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -89,7 +93,7 @@
                                 </svg>
                             </a>
 
-                            <!-- ✅ Eliminar -->
+                            <!-- Eliminar -->
                             <button (click)="deleteUser(user)" class="action-btn text-red-500" title="Eliminar">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"

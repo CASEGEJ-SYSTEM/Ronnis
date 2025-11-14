@@ -21,6 +21,14 @@ docker compose up -d
 
 ```
 
+### Acceder al CMD para el postgres del contenedor
+
+
+```
+docker exec -it postgres_gym psql -U admin -d FactorFIT
+
+```
+
 # Crear las migraciones
 
 ## Entrar en la caperta backend en tu visual studio o la terminal
@@ -28,6 +36,10 @@ docker compose up -d
 ```
 cd backend
 
+```
+## Instalar dependencias PHP con Composer
+```
+composer install
 ```
 
 ## Poner en la terminar una ves adentro de la caperta
@@ -49,6 +61,14 @@ php artisan serve
 cd fronted
 
 ```
+## Instalar las dependencias del proyecto Angular
+```
+npm install
+
+```
+
+## Correr el servidor del frontend
+
 ```
 npm start
 

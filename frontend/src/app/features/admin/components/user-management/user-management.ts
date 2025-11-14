@@ -42,9 +42,19 @@ export class UserManagement implements OnInit {
 
   deleteUser(user: any) {
     const isConfirmed = confirm(`¿Estás seguro de que deseas eliminar a ${user.nombres}?`);
-    if (isConfirmed) {
-      console.log('Eliminando usuario:', user.nombres);
-      alert(`${user.nombres} ha sido eliminado (simulación).`);
-    }
+    if (!isConfirmed) return;
+
+    this.clienteService.eliminarCliente(user.id).subscribe({
+      next: () => {
+        alert(`${user.nombres} ha sido eliminado correctamente.`);
+        // Quitar del arreglo local para actualizar la vista
+        this.usersData = this.usersData.filter(u => u.id !== user.id);
+      },
+      error: (err) => {
+        console.error('Error al eliminar cliente:', err);
+        alert('Ocurrió un error al eliminar al cliente.');
+      }
+    });
   }
+
 }

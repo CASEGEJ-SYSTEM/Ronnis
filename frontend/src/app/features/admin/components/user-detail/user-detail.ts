@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MockDataService } from '../../../../core/services/mock-data.service';
+import { ActivatedRoute } from '@angular/router';
+import { ClienteService } from '../../../../core/services/cliente.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-user-detail',
@@ -11,18 +12,43 @@ import { MockDataService } from '../../../../core/services/mock-data.service';
     styleUrl: './user-detail.css'
 })
 export class UserDetail implements OnInit {
-    user: any;
+    user: any = null;
+    id!: number;
 
     constructor(
         private route: ActivatedRoute,
-        private mockData: MockDataService
-    ) { }
+        private clienteService: ClienteService
+    ) {}
+
+    calcularDiasPagados(fechaPago: string): number {
+        const hoy = new Date();
+        const fecha = new Date(fechaPago);
+
+        const diferencia = fecha.getTime() - hoy.getTime();
+        const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+
+        return dias >= 0 ? dias : 0;
+    }
 
     ngOnInit() {
-        const userId = this.route.snapshot.paramMap.get('id');
-        if (userId) {
-            // En una app real, aquí llamarías a this.mockData.getUserById(+userId)
-            this.user = this.mockData.getUsers().find(u => u.id === +userId);
-        }
+        this.id = Number(this.route.snapshot.paramMap.get('id'));
+
+        this.clienteService.getClienteById(this.id).subscribe({
+            next: (data) => {
+                this.user = data;
+
+                // Asegurar que existe la fecha
+                if (this.user?.fecha_pago) {
+                    this.user.diasPagados = this.calcularDiasPagados(this.user.fecha_pago);
+                } else {
+                    this.user.diasPagados = 0;
+                }
+            },
+            error: (err) => {
+                console.error('Error al cargar usuario:', err);
+            }
+        });
     }
+
+
 }

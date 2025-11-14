@@ -9,6 +9,7 @@ import { UserStats } from './components/user-stats/user-stats';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
 import { Logbook } from './components/logbook/logbook';
+import { TrainerEdit } from './components/trainer-edit/trainer-edit';
 
 const routes: Routes = [
     {
@@ -20,6 +21,7 @@ const routes: Routes = [
             { path: 'usuarios/:id/editar', component: UserDetail },
             { path: 'usuarios/:id/estadisticas', component: UserStats },
             { path: 'personal', component: TrainerManagement },
+            { path: 'personal/nuevo', component: TrainerEdit },
             { path: 'precios', component: PriceManagement },
             { path: 'bitacora', component: Logbook },
             {
