@@ -1,17 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ClienteService } from '../../../../core/services/cliente.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router'; 
+import { MockDataService } from '../../../../core/services/mock-data.service';
 
 @Component({
-  selector: 'app-client-registration',
+  selector: 'app-trainer-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './client-registration.html',
-  styleUrls: ['./client-registration.css']
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './trainer-edit.html',
+  styleUrls: ['./trainer-edit.css']
 })
-export class ClientRegistration {
+export class TrainerEdit implements OnInit {
+
   today: string = new Date().toISOString().split('T')[0];
+
+  trainersData: any[] = [];
 
   // Campos del formulario
   cliente = {
@@ -24,23 +29,28 @@ export class ClientRegistration {
     total_pagado: 0
   };
 
-  constructor(private clienteService: ClienteService) {}
+  // 🔥 SOLO UN CONSTRUCTOR
+  constructor(
+    private mockData: MockDataService,
+    private clienteService: ClienteService
+  ) {}
+
+  ngOnInit() {
+    this.trainersData = this.mockData.getTrainers();
+  }
 
   registrarCliente() {
     const now = new Date();
-    
-    // Calcular fecha de pago según la regla
     const fecha_pago = this.calcularFechaPago(now);
 
-    // Registrar cliente
     const clienteData = {
       nombres: this.cliente.nombres,
       apellidos: this.cliente.apellidos,
       fecha_nacimiento: this.cliente.fecha_nacimiento,
       telefono: this.cliente.telefono,
       email: this.cliente.email,
-      contraseña: this.cliente.email, // contraseña = email
-      sede: 'Principal', // o cualquier valor por default
+      contraseña: this.cliente.email,
+      sede: 'Principal',
       ruta_imagen: '',
       qr_imagen: ''
     };
@@ -49,14 +59,12 @@ export class ClientRegistration {
       next: (resCliente) => {
         const cliente_id = resCliente.cliente.id;
 
-        // Registrar en registro_clientes
         this.clienteService.registrarRegistroCliente({
           cliente_id: cliente_id,
           fecha_ingreso: now.toISOString(),
           fecha_pago: fecha_pago.toISOString()
         }).subscribe();
 
-        // Registrar pago
         this.clienteService.registrarPago({
           cliente_id: cliente_id,
           monto: this.cliente.total_pagado,
@@ -73,29 +81,17 @@ export class ClientRegistration {
     });
   }
 
-  // Calcula la fecha de pago según la regla
   private calcularFechaPago(fecha: Date): Date {
     const day = fecha.getDate();
-    const mes = fecha.getMonth(); // 0-11
+    const mes = fecha.getMonth();
     const anio = fecha.getFullYear();
 
-    let fechaPago: Date;
-
     if (day >= 28 || day <= 6) {
-      // del 28 al 6 → paga el 1 del mes siguiente
-      if (day >= 28) {
-        fechaPago = new Date(anio, mes + 1, 1);
-      } else {
-        fechaPago = new Date(anio, mes, 1);
-      }
+      return new Date(anio, mes + (day >= 28 ? 1 : 0), 1);
     } else if (day >= 15 && day <= 21) {
-      // del 15 al 21 → paga el 15 del mes actual
-      fechaPago = new Date(anio, mes, 15);
+      return new Date(anio, mes, 15);
     } else {
-      // cualquier otro día → paga el 1 del próximo mes
-      fechaPago = new Date(anio, mes + 1, 1);
+      return new Date(anio, mes + 1, 1);
     }
-
-    return fechaPago;
   }
 }

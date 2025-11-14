@@ -1,5 +1,5 @@
 <div class="container mx-auto max-w-4xl">
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
+    <div class="grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
         <div class="text-center">
             <h1 class="text-6xl font-extrabold mb-8">Usuario</h1>
             <div class="relative inline-block">
@@ -27,15 +27,19 @@
         <div class="bg-white/10 p-8 rounded-2xl">
             <form class="space-y-4">
                 <div class="grid md:grid-cols-2 gap-4">
-                    <input type="text" [value]="user?.name.split(' ')[0]" placeholder="Nombre" class="input-field">
-                    <input type="text" [value]="user?.name.split(' ')[1]" placeholder="Apellido Paterno"
+                    <input type="text" [value]="user?.nombres" placeholder="Nombre" class="input-field">
+                    <input type="text" [value]="user?.apellidos" placeholder="Apellidos"
                         class="input-field">
-                    <input type="text" [value]="user?.name.split(' ')[2]" placeholder="Apellido Materno"
+                    <input type="text" [value]="user?.fecha_nacimiento" placeholder="Fecha de Nacimiento"
                         class="input-field">
-                    <input type="tel" [value]="user?.phone" placeholder="Número de Celular" class="input-field">
+                    <input type="tel" [value]="user?.telefono" placeholder="Número de Celular" class="input-field">
                 </div>
                 <input type="email" [value]="user?.email" placeholder="E-mail" class="input-field w-full">
-                <input type="text" value="3" placeholder="Meses Pagados" class="input-field w-full">
+                <div class="grid md:grid-cols-2 gap-4">
+                <input type="text" [value]="user?.sede" placeholder="Sede" class="input-field ">
+                
+                <input type="text" [value]="user?.diasPagados" placeholder="Meses Pagados" class="input-field w-full">
+                </div>
                 <button type="submit"
                     class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">Guardar Cambios</button>
             </form>

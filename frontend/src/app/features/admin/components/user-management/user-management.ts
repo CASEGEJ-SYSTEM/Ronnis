@@ -1,40 +1,60 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MockDataService } from '../../../../core/services/mock-data.service';
+import { ClienteService } from '../../../../../app/core/services/cliente.service';
 import { QrCodeModal } from '../../../../shared/components/qr-code-modal/qr-code-modal';
 
 @Component({
-    selector: 'app-user-management',
-    standalone: true,
-    imports: [CommonModule, RouterLink, QrCodeModal],
-    templateUrl: './user-management.html',
-    styleUrl: './user-management.css'
+  selector: 'app-user-management',
+  standalone: true,
+  imports: [CommonModule, RouterLink, QrCodeModal],
+  templateUrl: './user-management.html',
+  styleUrl: './user-management.css'
 })
 export class UserManagement implements OnInit {
-    usersData: any[] = [];
-    // Señal para controlar la visibilidad del modal y qué usuario mostrar
-    selectedUserForQr = signal<any | null>(null);
+  usersData: any[] = [];
+  selectedUserForQr = signal<any | null>(null);
 
-    constructor(private mockData: MockDataService) { }
+  constructor(private clienteService: ClienteService) {}
 
-    ngOnInit() {
-        this.usersData = this.mockData.getUsers();
-    }
+  ngOnInit() {
+    this.cargarClientes();
+  }
 
-    showQrModal(user: any) {
-        this.selectedUserForQr.set(user);
-    }
+  cargarClientes() {
+    this.clienteService.getClientes().subscribe({
+      next: (data) => {
+        this.usersData = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar clientes:', err);
+      }
+    });
+  }
 
-    closeQrModal() {
-        this.selectedUserForQr.set(null);
-    }
+  showQrModal(user: any) {
+    this.selectedUserForQr.set(user);
+  }
 
-    deleteUser(user: any) {
-        const isConfirmed = confirm(`¿Estás seguro de que deseas eliminar a ${user.name}?`);
-        if (isConfirmed) {
-            console.log('Eliminando usuario:', user.name);
-            alert(`${user.name} ha sido eliminado (simulación).`);
-        }
-    }
+  closeQrModal() {
+    this.selectedUserForQr.set(null);
+  }
+
+  deleteUser(user: any) {
+    const isConfirmed = confirm(`¿Estás seguro de que deseas eliminar a ${user.nombres}?`);
+    if (!isConfirmed) return;
+
+    this.clienteService.eliminarCliente(user.id).subscribe({
+      next: () => {
+        alert(`${user.nombres} ha sido eliminado correctamente.`);
+        // Quitar del arreglo local para actualizar la vista
+        this.usersData = this.usersData.filter(u => u.id !== user.id);
+      },
+      error: (err) => {
+        console.error('Error al eliminar cliente:', err);
+        alert('Ocurrió un error al eliminar al cliente.');
+      }
+    });
+  }
+
 }

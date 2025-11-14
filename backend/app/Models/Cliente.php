@@ -17,6 +17,11 @@ class Cliente extends Model
         'email',
         'contraseña',
         'sede',
-        'status'
+        'status',
+        'ruta_imagen',
+        'qr_imagen'
     ];
+
+    // Oculta la contraseña al devolver datos JSON
+    protected $hidden = ['contraseña'];
 }

@@ -9,6 +9,7 @@ import { UserManagement } from './components/user-management/user-management';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
 import { Logbook } from './components/logbook/logbook';
+import { TrainerEdit } from './components/trainer-edit/trainer-edit';
 
 @NgModule({
     declarations: [],
@@ -19,6 +20,7 @@ import { Logbook } from './components/logbook/logbook';
         ClientRegistration,
         UserManagement,
         TrainerManagement,
+        TrainerEdit,
         PriceManagement,
         Logbook
     ]

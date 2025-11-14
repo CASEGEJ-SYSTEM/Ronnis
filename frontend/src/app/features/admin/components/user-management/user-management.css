@@ -4,6 +4,6 @@
     * {}
 
     .action-btn {
-        @apply p-2 rounded-md transition-colors hover:bg-white/10;
+        @apply p-2 rounded-md transition-colors hover:bg-black/40;
     }
 }
