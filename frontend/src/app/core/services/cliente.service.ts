@@ -11,6 +11,7 @@ export class ClienteService {
   private apiUrl = `${environment.apiUrl}/api/clientes`;
   private registroUrl = `${environment.apiUrl}/api/registro-clientes`;
   private pagosUrl = `${environment.apiUrl}/api/pagos`;
+  private personalUrl = `${environment.apiUrl}/api/registro-personal`;
 
   constructor(private http: HttpClient) {}
 
@@ -46,4 +47,8 @@ export class ClienteService {
   eliminarCliente(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+  registrarPersonal(data: any) {
+  return this.http.post(`${this.personalUrl}`, data);
+}
+
 }

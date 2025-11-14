@@ -29,6 +29,11 @@ docker exec -it postgres_gym psql -U admin -d FactorFIT
 
 ```
 
+
+### Instalacion de api
+```
+php artisan install:api
+```
 # Crear las migraciones
 
 ## Entrar en la caperta backend en tu visual studio o la terminal
@@ -41,6 +46,8 @@ cd backend
 ```
 composer install
 ```
+### Definir una migración para la tabla users:
+php artisan make:migration create_users_table
 
 ## Poner en la terminar una ves adentro de la caperta
 
@@ -49,6 +56,18 @@ php artisan migrate:fresh
 
 ```
 
+### Crear un modelo
+
+
+```
+php artisan make:model User 
+```
+### Crear un controlador
+
+```
+php artisan make:controller UserController
+
+```
 # Correr el servidor del backend
 
 ```

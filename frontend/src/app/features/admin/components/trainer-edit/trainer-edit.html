@@ -1,47 +1,50 @@
 <div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+
     <div class="text-center">
-        <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro</h1>
+        <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro de Personal</h1>
         <div class="flex justify-center">
             <div class="bg-black rounded-full p-4 shadow-2xl">
                 <img src="images/fitness1.webp" alt="Ilustración Fitness" class="size-70">
             </div>
         </div>
     </div>
+
     <div class="p-2 rounded-2xl">
-        <form class="space-y-4" (ngSubmit)="registrarCliente()" #form="ngForm">
+        <form class="space-y-4" (ngSubmit)="registrarPersonal()" #form="ngForm">
+
             <div>
-                <label for="nombre" class="text-black font-medium">Nombre Completo</label>
-                <input type="text" id="nombre" placeholder="Andrea" [(ngModel)]="cliente.nombres" name="nombres" required class="input-field">
+                <label class="text-black font-medium">Nombre completo</label>
+                <input type="text" placeholder="Andrea López"
+                       [(ngModel)]="personal.nombre_completo"
+                       name="nombre_completo"
+                       required
+                       class="input-field">
             </div>
-            
+
             <div>
-                <label for="puesto" class="text-black font-medium">Púesto</label>
-                <input type="text" id="puesto" placeholder="Recepcionista" [(ngModel)]="cliente.apellidos" name="apellidos" required class="input-field">
+                <label class="text-black font-medium">Puesto</label>
+                <input type="text" placeholder="Recepcionista"
+                       [(ngModel)]="personal.puesto"
+                       name="puesto"
+                       required
+                       class="input-field">
             </div>
+
             <div>
                 <label class="text-black font-medium">Descripción</label>
-                <input type="tel" id="numero" placeholder="··· ···· ···" [(ngModel)]="cliente.telefono" name="telefono" required class="input-field">
+                <input type="text" placeholder="Encargada del área de recepción"
+                       [(ngModel)]="personal.descripcion"
+                       name="descripcion"
+                       class="input-field">
             </div>
-            
-            <button  type="submit"
-                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
-                Registrar
-            </button>
-        </form>
-        <a routerLink="/admin/personal" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12" />
-                <polyline points="12 19 5 12 12 5" />
-            </svg>
-        </a>
 
+            <button type="submit"
+                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
+                Registrar Personal
+            </button>
+
+        </form>
     </div>
+
 </div>
+
