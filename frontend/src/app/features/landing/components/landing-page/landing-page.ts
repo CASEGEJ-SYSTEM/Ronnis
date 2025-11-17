@@ -7,7 +7,9 @@ import { Header } from '../../../../shared/components/header/header';
 import { Footer } from '../../../../shared/components/footer/footer';
 import { HeroSection } from '../hero-section/hero-section';
 import { AboutUsSection } from '../about-us-section/about-us-section';
+import { EventsSection } from '../events-sections/events-section';
 import { TrainersSection } from '../trainers-section/trainers-section';
+import { PriceManagement } from '../price-management/price-management';
 import { LocationSection } from '../location-section/location-section';
 
 @Component({
@@ -20,7 +22,9 @@ import { LocationSection } from '../location-section/location-section';
         Footer,
         HeroSection,
         AboutUsSection,
+        EventsSection,
         TrainersSection,
+        PriceManagement,
         LocationSection
     ],
     templateUrl: './landing-page.html',

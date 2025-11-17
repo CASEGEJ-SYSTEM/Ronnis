@@ -6,6 +6,7 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminLayout } from './components/admin-layout/admin-layout';
 import { ClientRegistration } from './components/client-registration/client-registration';
 import { UserManagement } from './components/user-management/user-management';
+import { UserPay } from './components/user-pay/user-pay';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
 import { Logbook } from './components/logbook/logbook';
@@ -21,6 +22,7 @@ import { TrainerEdit } from './components/trainer-edit/trainer-edit';
         UserManagement,
         TrainerManagement,
         TrainerEdit,
+        UserPay,
         PriceManagement,
         Logbook
     ]

@@ -8,13 +8,13 @@ import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs);
 
 @Component({
-  selector: 'app-user-management',
+  selector: 'app-user-pay',
   standalone: true,
   imports: [CommonModule, RouterLink, QrCodeModal],
-  templateUrl: './user-management.html',
-  styleUrls: ['./user-management.css']
+  templateUrl: './user-pay.html',
+  styleUrls: ['./user-pay.css']
 })
-export class UserManagement implements OnInit {
+export class UserPay implements OnInit {
   usersData: any[] = [];
   selectedUserForQr = signal<any | null>(null);
 

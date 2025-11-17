@@ -9,13 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->id();
+            $table->string('clave_usuario', 20)->primary();
             $table->string('email', 60)->unique();
-            $table->string('contraseña', 60);
+            $table->string('password', 255);
             $table->string('rol', 30);
 
             // Relación con la tabla clientes (referencia por email)
-            $table->foreign('email')->references('email')->on('clientes')->onDelete('cascade');
+            $table->foreign('email')->references('email')->on('usuarios')->onDelete('cascade');
         });
     }
 

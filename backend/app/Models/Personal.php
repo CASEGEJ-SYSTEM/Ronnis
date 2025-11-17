@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RegistroPersonal extends Model
+class Personal extends Model
 {
     use HasFactory;
 
-    protected $table = 'registro_personal';
+    protected $table = 'personal';
 
     protected $fillable = [
         'nombre_completo',

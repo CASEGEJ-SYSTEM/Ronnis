@@ -9,16 +9,16 @@ class Asistencia extends Model
 {
     use HasFactory;
 
+    protected $table = 'asistencias';
+
     protected $fillable = [
-        'cliente_id',
-        'nombres',
-        'apellidos',
-        'plan_pago',
-        'fecha_llegada'
+        'clave_cliente',
+        'fecha_diario',
+        'porcentaje'
     ];
 
-    public function cliente()
+    public function usuario()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Usuario::class, 'clave_cliente', 'clave_usuario');
     }
 }

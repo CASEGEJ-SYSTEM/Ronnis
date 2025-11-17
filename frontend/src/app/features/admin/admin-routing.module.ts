@@ -6,6 +6,7 @@ import { ClientRegistration } from './components/client-registration/client-regi
 import { UserManagement } from './components/user-management/user-management';
 import { UserDetail } from './components/user-detail/user-detail';
 import { UserStats } from './components/user-stats/user-stats';
+import { UserPay } from './components/user-pay/user-pay';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
 import { Logbook } from './components/logbook/logbook';
@@ -20,6 +21,7 @@ const routes: Routes = [
             { path: 'usuarios', component: UserManagement },
             { path: 'usuarios/:id/editar', component: UserDetail },
             { path: 'usuarios/:id/estadisticas', component: UserStats },
+            { path: 'pago', component: UserPay },
             { path: 'personal', component: TrainerManagement },
             { path: 'personal/nuevo', component: TrainerEdit },
             { path: 'precios', component: PriceManagement },

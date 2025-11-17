@@ -18,54 +18,47 @@ export class Register {
   constructor(private http: HttpClient, private router: Router) {}
 
   handleRegister(formValue: any) {
-    // Validar contraseñas
     if (formValue.password !== formValue.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
 
-    // Estructura del payload (debe coincidir con Laravel)
+    if (formValue.password.length < 6) {
+      alert('La contraseña debe tener mínimo 6 caracteres');
+      return;
+    }
+
     const payload = {
       nombres: formValue.firstName,
       apellidos: formValue.lastName,
       fecha_nacimiento: formValue.birthDate,
       telefono: formValue.phone,
       email: formValue.email,
-      contraseña: formValue.password, // Laravel espera este campo literal
-      sede: formValue.sede || 'principal', // opcional
+      password: formValue.password, 
+      sede: "ninguno", 
+      status: "pendiente",               
       ruta_imagen: null,
       qr_imagen: null
     };
 
-    console.log('Enviando datos:', payload);
+    console.log('Registrando usuario con rol:', payload);
 
-    // Enviar la petición al backend de Laravel
-    this.http.post(`${environment.apiUrl}/api/clientes`, payload).subscribe({
-      next: (response: any) => {
-        console.log('Respuesta del servidor:', response);
-        alert('Registro exitoso. Ahora puedes iniciar sesión.');
+    this.http.post(`${environment.apiUrl}/api/usuarios`, payload).subscribe({
+      next: (res: any) => {
+        alert('Registro exitoso. Espera la activación de tu cuenta.');
         this.router.navigate(['/auth/login']);
       },
-      error: (error) => {
-        console.error('Error al registrar:', error);
-
-        // Validación del frontend
-        if (formValue.password.length < 6) {
-          alert('La contraseña debe tener al menos 6 caracteres');
-          return;
-        }
-
-        // Manejo de errores comunes
-        if (error.status === 422) {
-          alert('Error de validación. Verifica los datos ingresados.');
-        } else if (error.status === 0) {
-          alert('No se pudo conectar con el servidor. Verifica que Laravel esté corriendo.');
-        } else if (error.error?.message) {
-          alert(error.error.message);
-        } else {
-          alert('Ocurrió un error inesperado. Intenta nuevamente.');
-        }
+     error: (error) => {
+      let mensaje = 'Error inesperado, intenta nuevamente.';
+      
+      if (error.status === 422 && error.error?.errors?.email) {
+        mensaje = 'El correo ya está registrado.';
       }
+      
+      alert(mensaje);
+      console.error(error);
+    }
+
     });
   }
 }

@@ -1,52 +1,52 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pago;
+use Illuminate\Http\Request;
 
 class PagoController extends Controller
 {
     public function index()
     {
-        return response()->json(Pago::with('cliente')->get());
+        return response()->json(Pago::with('usuario')->get());
     }
 
     public function show($id)
     {
-        $pago = Pago::with('cliente')->find($id);
-        if (!$pago) return response()->json(['message'=>'Pago no encontrado'],404);
-        return response()->json($pago);
+        $pago = Pago::with('usuario')->where('clave_cliente', $id)->first();
+        return $pago ? response()->json($pago)
+                     : response()->json(['message' => 'Pago no encontrado'], 404);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
-            'monto' => 'required|numeric',
-            'fecha' => 'nullable|date',
-            'monto_pendiente' => 'nullable|numeric'
+            'clave_cliente' => 'required|string|exists:usuarios,clave_usuario',
+            'fecha_ingreso' => 'nullable|date',
+            'fecha_corte' => 'nullable|date',
+            'Tipo_pago' => 'nullable|string|max:20',
+            'monto_pagado' => 'nullable|numeric',
+            'monto_pendiente' => 'nullable|numeric',
+            'monto_recargo' => 'nullable|numeric',
         ]);
 
         $pago = Pago::create($validated);
-        return response()->json($pago, 201);
+
+        return response()->json(['message' => 'Pago registrado', 'pago' => $pago], 201);
     }
 
     public function update(Request $request, $id)
     {
-        $pago = Pago::find($id);
-        if (!$pago) return response()->json(['message'=>'Pago no encontrado'],404);
+        $pago = Pago::where('clave_cliente', $id)->first();
+        if (!$pago) return response()->json(['message' => 'Pago no encontrado'], 404);
 
         $pago->update($request->all());
-        return response()->json($pago);
+        return response()->json(['message' => 'Pago actualizado', 'pago' => $pago]);
     }
 
     public function destroy($id)
     {
-        $pago = Pago::find($id);
-        if (!$pago) return response()->json(['message'=>'Pago no encontrado'],404);
-
-        $pago->delete();
-        return response()->json(['message'=>'Pago eliminado correctamente']);
+        Pago::where('clave_cliente', $id)->delete();
+        return response()->json(['message' => 'Registro(s) de pago eliminado(s)']);
     }
 }

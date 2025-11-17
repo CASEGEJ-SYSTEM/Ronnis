@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('clientes', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombres', 60);
-            $table->string('apellidos', 60);
+        Schema::create('usuarios', function (Blueprint $table) {
+            $table->string('clave_usuario', 20)->primary();
+            $table->string('nombres', 40);
+            $table->string('apellidos', 40);
             $table->date('fecha_nacimiento');
-            $table->string('telefono', 20);
+            $table->string('telefono', 15);
             $table->string('email', 60)->unique();
-            $table->string('contraseña', 60);
+            $table->string('password', 255);
             $table->string('sede', 30);
             $table->string('status', 30)->default('activo');
             $table->text('ruta_imagen')->nullable();
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('usuarios');
     }
 };

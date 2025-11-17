@@ -1,54 +1,52 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ClienteService } from '../../../../core/services/cliente.service';
+import { UsuarioService } from '../../../../core/services/usuario.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'app-user-detail',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
-    templateUrl: './user-detail.html',
-    styleUrl: './user-detail.css'
+  selector: 'app-user-detail',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './user-detail.html',
+  styleUrls: ['./user-detail.css']
 })
 export class UserDetail implements OnInit {
-    user: any = null;
-    id!: number;
 
-    constructor(
-        private route: ActivatedRoute,
-        private clienteService: ClienteService
-    ) {}
+  user: any = null;
+  clave_usuario!: string;
 
-    calcularDiasPagados(fechaPago: string): number {
-        const hoy = new Date();
-        const fecha = new Date(fechaPago);
+  constructor(
+    private route: ActivatedRoute,
+    private usuarioService: UsuarioService
+  ) {}
 
-        const diferencia = fecha.getTime() - hoy.getTime();
-        const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+  calcularDiasPagados(fechaPago: string): number {
+    const hoy = new Date();
+    const fecha = new Date(fechaPago);
 
-        return dias >= 0 ? dias : 0;
-    }
+    const diferencia = fecha.getTime() - hoy.getTime();
+    const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
 
-    ngOnInit() {
-        this.id = Number(this.route.snapshot.paramMap.get('id'));
+    return dias >= 0 ? dias : 0;
+  }
 
-        this.clienteService.getClienteById(this.id).subscribe({
-            next: (data) => {
-                this.user = data;
+  ngOnInit() {
+    this.clave_usuario = String(this.route.snapshot.paramMap.get('clave_usuario'));
 
-                // Asegurar que existe la fecha
-                if (this.user?.fecha_pago) {
-                    this.user.diasPagados = this.calcularDiasPagados(this.user.fecha_pago);
-                } else {
-                    this.user.diasPagados = 0;
-                }
-            },
-            error: (err) => {
-                console.error('Error al cargar usuario:', err);
-            }
-        });
-    }
+    this.usuarioService.getUsuarioByClave(this.clave_usuario).subscribe({
+      next: (data) => {
+        this.user = data;
 
-
+        if (this.user?.fecha_corte) {
+          this.user.diasPagados = this.calcularDiasPagados(this.user.fecha_corte);
+        } else {
+          this.user.diasPagados = 0;
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar usuario:', err);
+      }
+    });
+  }
 }

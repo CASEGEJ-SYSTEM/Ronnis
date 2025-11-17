@@ -7,14 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('pagos', function (Blueprint $table) {
-            $table->id(); // PK
-            $table->unsignedBigInteger('cliente_id'); // FK
-            $table->float('monto');
-            $table->timestamp('fecha')->nullable();
+            $table->string('clave_cliente', 20); 
+            $table->timestamp('fecha_ingreso')->nullable();
+            $table->timestamp('fecha_corte')->nullable();
+            $table->string('Tipo_pago',20)->nullable();
+            $table->float('monto_pagado')->nullable();
             $table->float('monto_pendiente')->nullable();
+            $table->float('monto_recargo')->nullable();
+
             $table->timestamps();
 
-            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
+            $table->foreign('clave_cliente')->references('clave_usuario')->on('usuarios')->onDelete('cascade');
         });
     }
 

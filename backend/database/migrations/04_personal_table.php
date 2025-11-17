@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('registro_personal', function (Blueprint $table) {
+        Schema::create('personal', function (Blueprint $table) {
             $table->id(); // PK
             $table->string('nombre_completo', 150);
             $table->string('puesto', 50);
-            $table->string('descripcion', 255)->nullable();
+            $table->text('descripcion')->nullable();
             $table->text('ruta_imagen')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists('registro_personal');
+        Schema::dropIfExists('personal');
     }
 };

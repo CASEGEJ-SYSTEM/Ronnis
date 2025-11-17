@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ClienteService } from '../../../../core/services/cliente.service';
+import { UsuarioService } from '../../../../core/services/usuario.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,88 +11,81 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./client-registration.css']
 })
 export class ClientRegistration {
+
   today: string = new Date().toISOString().split('T')[0];
 
-  // Campos del formulario
-  cliente = {
+  usuario = {
     nombres: '',
     apellidos: '',
     fecha_nacimiento: '',
     telefono: '',
     email: '',
-    plan_pago: '',
-    total_pagado: 0
+    fecha_inscripcion: this.today,
+    fecha_corte: ''
   };
 
-  constructor(private clienteService: ClienteService) {}
+  constructor(private usuarioService: UsuarioService) {}
 
-  registrarCliente() {
+  registrarusuario() {
     const now = new Date();
-    
-    // Calcular fecha de pago según la regla
-    const fecha_pago = this.calcularFechaPago(now);
+    const fechaCorte = this.calcularFechaPago(now);
 
-    // Registrar cliente
-    const clienteData = {
-      nombres: this.cliente.nombres,
-      apellidos: this.cliente.apellidos,
-      fecha_nacimiento: this.cliente.fecha_nacimiento,
-      telefono: this.cliente.telefono,
-      email: this.cliente.email,
-      contraseña: this.cliente.email, // contraseña = email
-      sede: 'Principal', // o cualquier valor por default
+    // Forzar fechas automáticas
+    this.usuario.fecha_inscripcion = this.today;
+    this.usuario.fecha_corte = fechaCorte.toISOString().split('T')[0];
+
+    const usuarioData = {
+      nombres: this.usuario.nombres,
+      apellidos: this.usuario.apellidos,
+      fecha_nacimiento: this.usuario.fecha_nacimiento,
+      telefono: this.usuario.telefono,
+      email: this.usuario.email,
+      password: this.usuario.email, // contraseña = email
+      fecha_inscripcion: this.usuario.fecha_inscripcion,
+      fecha_corte: this.usuario.fecha_corte,
+      sede: 'Principal',
       ruta_imagen: '',
       qr_imagen: ''
     };
 
-    this.clienteService.registrarCliente(clienteData).subscribe({
-      next: (resCliente) => {
-        const cliente_id = resCliente.cliente.id;
+    this.usuarioService.registrarUsuario(usuarioData).subscribe({
+      next: (resusuario) => {
+        const usuario_id = resusuario.usuario.id;
 
-        // Registrar en registro_clientes
-        this.clienteService.registrarRegistroCliente({
-          cliente_id: cliente_id,
+        this.usuarioService.registrarUsuario({
+          usuario_id: usuario_id,
           fecha_ingreso: now.toISOString(),
-          fecha_pago: fecha_pago.toISOString()
+          fecha_pago: fechaCorte.toISOString()
         }).subscribe();
 
-        // Registrar pago
-        this.clienteService.registrarPago({
-          cliente_id: cliente_id,
-          monto: this.cliente.total_pagado,
+        this.usuarioService.registrarPago({
+          usuario_id: usuario_id,
           fecha: now.toISOString(),
           monto_pendiente: 0
         }).subscribe();
 
-        alert('Cliente registrado correctamente.');
+        alert('Usuario registrado correctamente.');
       },
       error: (err) => {
         console.error(err);
-        alert('Error al registrar cliente');
+        alert('Error al registrar usuario');
       }
     });
   }
 
-  // Calcula la fecha de pago según la regla
   private calcularFechaPago(fecha: Date): Date {
     const day = fecha.getDate();
-    const mes = fecha.getMonth(); // 0-11
+    const mes = fecha.getMonth();
     const anio = fecha.getFullYear();
-
     let fechaPago: Date;
 
     if (day >= 28 || day <= 6) {
-      // del 28 al 6 → paga el 1 del mes siguiente
-      if (day >= 28) {
-        fechaPago = new Date(anio, mes + 1, 1);
-      } else {
-        fechaPago = new Date(anio, mes, 1);
-      }
+      fechaPago = day >= 28
+        ? new Date(anio, mes + 1, 1)
+        : new Date(anio, mes, 1);
     } else if (day >= 15 && day <= 21) {
-      // del 15 al 21 → paga el 15 del mes actual
       fechaPago = new Date(anio, mes, 15);
     } else {
-      // cualquier otro día → paga el 1 del próximo mes
       fechaPago = new Date(anio, mes + 1, 1);
     }
 

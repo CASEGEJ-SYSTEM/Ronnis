@@ -10,11 +10,19 @@ class Rol extends Model
     use HasFactory;
 
     protected $table = 'roles';
-    public $timestamps = false; // Si no tienes created_at / updated_at
+    protected $primaryKey = 'clave_usuario';
+    public $timestamps = false; 
 
     protected $fillable = [
+        'clave_usuario',
         'email',
-        'contraseña',
-        'rol',
+        'password',
+        'rol'
     ];
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'clave_usuario', 'clave_usuario');
+    }
+
+
 }

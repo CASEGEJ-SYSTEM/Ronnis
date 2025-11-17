@@ -29,14 +29,17 @@ export class Login {
 
     const payload = {
       email: credentials.email,
-      contraseña: credentials.password
+      password: credentials.password
     };
 
-    // Aquí usamos la URL base desde environment
+
     this.http.post(`${environment.apiUrl}/api/login`, payload).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
-        console.log('Login exitoso:', response);
+
+        // Guardar datos del usuario
+        localStorage.setItem('usuario', JSON.stringify(response.usuario));
+        localStorage.setItem('rol', response.rol);
 
         const rol = response.rol;
 
@@ -50,12 +53,8 @@ export class Login {
       },
       error: (error) => {
         this.isLoading.set(false);
-        console.error('Error al iniciar sesión:', error);
-
-        if (error.status === 404) {
-          this.loginError.set('Error de validación. Verifica los datos ingresados.');
-        } else if (error.status === 401) {
-          this.loginError.set('Error de validación. Verifica los datos ingresados.');
+        if (error.status === 401) {
+          this.loginError.set('Correo o contraseña incorrectos.');
         } else if (error.status === 0) {
           this.loginError.set('No se pudo conectar con el servidor.');
         } else {

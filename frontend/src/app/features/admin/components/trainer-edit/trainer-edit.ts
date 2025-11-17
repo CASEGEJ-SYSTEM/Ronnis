@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ClienteService } from '../../../../core/services/cliente.service';
+import { UsuarioService } from '../../../../core/services/usuario.service';
 
 @Component({
   selector: 'app-trainer-edit',
@@ -20,7 +20,7 @@ export class TrainerEdit {
     ruta_imagen: ''
   };
 
-  constructor(private clienteService: ClienteService) {}
+  constructor(private clienteService: UsuarioService) {}
 
   registrarPersonal() {
 

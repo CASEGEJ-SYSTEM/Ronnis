@@ -1,0 +1,21 @@
+<section id="events" class="py-24 bg-gradient-to-tr from-fuchsia-400 to-gray-900">
+  <div class="container mx-auto px-6 text-center">
+    <h2 class="text-6xl text-purple-300 font-rock font-bold mb-12">Eventos</h2>
+
+    <div class="max-w-3xl mx-auto bg-black/30 p-6 rounded-2xl shadow-lg">
+      <div class="carousel-container relative">
+        
+        <button class="carousel-btn prev" (click)="moveSlide(-1)">&#10094;</button>
+
+        <div class="carousel-slide" #slideContainer>
+          <img src="https://i.ibb.co/fVkWV6RX/922111c151046fba75afd2ce34cb8563.jpg" alt="img1">
+          <img src="https://i.ibb.co/6JDrPTnz/OIP.webp" alt="img2">
+          <img src="https://i.ibb.co/pvdB7FgW/download.webp" alt="img3">
+        </div>
+
+        <button class="carousel-btn next" (click)="moveSlide(1)">&#10095;</button>
+
+      </div>
+    </div>
+  </div>
+</section>

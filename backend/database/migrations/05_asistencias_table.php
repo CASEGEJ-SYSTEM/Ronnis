@@ -7,15 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('asistencias', function (Blueprint $table) {
-            $table->id(); // PK
-            $table->unsignedBigInteger('cliente_id'); // FK
-            $table->string('nombres', 60);
-            $table->string('apellidos', 60);
-            $table->string('plan_pago', 20);
-            $table->timestamp('fecha_llegada')->nullable();
+            $table->string('clave_cliente', 20); 
+            $table->timestamp('fecha_diario')->nullable();
+            $table->string('porcentaje', 8)->nullable(); 
             $table->timestamps();
 
-            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
+            $table->foreign('clave_cliente')->references('clave_usuario')->on('usuarios')->onDelete('cascade');
         });
     }
 
