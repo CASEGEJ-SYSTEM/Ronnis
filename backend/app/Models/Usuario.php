@@ -25,13 +25,10 @@ class Usuario extends Model
         'sede',
         'status',
         'ruta_imagen',
-        'qr_imagen'
+        'qr_imagen',
+        'rol'
     ];
 
-    public function rol()
-    {
-        return $this->hasOne(Rol::class, 'clave_usuario', 'clave_usuario');
-    }
     public function pagos()
     {
         return $this->hasMany(Pago::class, 'clave_cliente', 'clave_usuario');
@@ -41,5 +38,7 @@ class Usuario extends Model
     {
         return $this->hasMany(Asistencia::class, 'clave_cliente', 'clave_usuario');
     }
+
+
     
 }

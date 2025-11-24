@@ -11,7 +11,7 @@ class PagosSeeder extends Seeder
     {
         DB::table('pagos')->insert([
             [
-                'clave_cliente' => 'CLI001',
+                'clave_cliente' => 'CLI004',
                 'fecha_ingreso' => now()->subDays(30),
                 'fecha_corte' => now()->addDays(10),
                 'Tipo_pago' => 'Mensual',
@@ -22,10 +22,10 @@ class PagosSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'clave_cliente' => 'CLI002',
-                'fecha_ingreso' => now()->subDays(30),
-                'fecha_corte' => now()->addDays(2),
-                'Tipo_pago' => 'Mensual',
+                'clave_cliente' => 'CLI005',
+                'fecha_ingreso' => now()->subDays(15),
+                'fecha_corte' => now()->addDays(15),
+                'Tipo_pago' => 'Quincenal',
                 'monto_pagado' => 300,
                 'monto_pendiente' => 200,
                 'monto_recargo' => 50,

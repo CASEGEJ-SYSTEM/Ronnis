@@ -13,11 +13,17 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./register.css']
 })
 export class Register {
+  
   today: string = new Date().toISOString().split('T')[0];
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   handleRegister(formValue: any) {
+
+    // Validaciones del lado del front
     if (formValue.password !== formValue.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
@@ -28,37 +34,50 @@ export class Register {
       return;
     }
 
+    // Payload que espera el backend
     const payload = {
-      nombres: formValue.firstName,
-      apellidos: formValue.lastName,
-      fecha_nacimiento: formValue.birthDate,
-      telefono: formValue.phone,
-      email: formValue.email,
-      password: formValue.password, 
-      sede: "ninguno", 
-      status: "pendiente",               
-      ruta_imagen: null,
-      qr_imagen: null
+      nombres            : formValue.firstName,
+      apellidos          : formValue.lastName,
+      fecha_nacimiento   : formValue.birthDate,
+      telefono           : formValue.phone,
+      email              : formValue.email,
+      password           : formValue.password,
+      
+      // valores por defecto
+      sede               : "ninguno",
+      status             : "pendiente",
+      rol                : "cliente",
+      
+      ruta_imagen        : null,
+      qr_imagen          : null
     };
 
-    console.log('Registrando usuario con rol:', payload);
+    console.log('Enviando registro:', payload);
 
     this.http.post(`${environment.apiUrl}/api/usuarios`, payload).subscribe({
-      next: (res: any) => {
+      next: () => {
         alert('Registro exitoso. Espera la activación de tu cuenta.');
         this.router.navigate(['/auth/login']);
       },
-     error: (error) => {
-      let mensaje = 'Error inesperado, intenta nuevamente.';
-      
-      if (error.status === 422 && error.error?.errors?.email) {
-        mensaje = 'El correo ya está registrado.';
-      }
-      
-      alert(mensaje);
-      console.error(error);
-    }
+      error: (error) => {
 
+        let mensaje = 'Error inesperado, intenta nuevamente.';
+
+        // Error 422 :(validación del backend)
+        if (error.status === 422) {
+
+          if (error.error?.errors?.email) {
+            mensaje = 'El correo ya está registrado.';
+          }
+
+          if (error.error?.errors?.telefono) {
+            mensaje = 'El teléfono no es válido.';
+          }
+        }
+
+        alert(mensaje);
+        console.error('[ERROR REGISTRO]', error);
+      }
     });
   }
 }

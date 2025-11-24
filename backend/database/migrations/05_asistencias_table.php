@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('asistencias', function (Blueprint $table) {
-            $table->string('clave_cliente', 20); 
+            $table->bigIncrements('id');
+            $table->string('clave_cliente', 8); 
             $table->timestamp('fecha_diario')->nullable();
             $table->string('porcentaje', 8)->nullable(); 
             $table->timestamps();

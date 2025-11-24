@@ -3,143 +3,257 @@
 namespace App\Http\Controllers;
 
 use App\Models\Usuario;
-use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-
 class UsuarioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Usuario::with('rol')->get());
+        $query = Usuario::with(['pagos', 'asistencias']);
+
+        $query->whereNotIn('rol', ['admin', 'superadmin']);
+
+
+        if ($request->has('sede')) {
+            $query->where('sede', $request->sede);
+        }
+
+        return response()->json($query->get());
     }
 
-    public function show($id)
+
+
+
+    public function show($clave_usuario)
     {
-        $usuario = Usuario::with(['rol', 'pagos', 'asistencias'])->find($id);
-        return $usuario ? response()->json($usuario) 
-                        : response()->json(['message' => 'Usuario no encontrado'], 404);
+        $usuario = Usuario::with(['pagos', 'asistencias'])
+            ->where('clave_usuario', $clave_usuario)
+            ->first();
+
+        return $usuario
+            ? response()->json($usuario)
+            : response()->json(['message' => 'Usuario no encontrado'], 404);
     }
+
 
     // POST /api/usuarios
- public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nombres' => 'required|string|max:40',
-        'apellidos' => 'required|string|max:40',
-        'fecha_nacimiento' => 'required|date',
-        'telefono' => 'required|string|max:15',
-        'email' => 'required|email|unique:usuarios,email',
-        'password' => 'required|string|min:6',
-        'sede' => 'nullable|string|max:30',
-        'status' => 'nullable|string|max:30',
-        'ruta_imagen' => 'nullable|string',
-        'qr_imagen' => 'nullable|string',
-    ]);
-
-    $validated['status'] = $validated['status'] ?? 'pendiente';
-    $validated['sede'] = $validated['sede'] ?? 'ninguno';
-    $validated['password'] = bcrypt($validated['password']);
-
-    $usuario = null;
-
-    DB::transaction(function() use ($validated, &$usuario) {
-        // Obtener último número de clave_usuario en PostgreSQL
-        $lastNumber = DB::table('usuarios')
-            ->selectRaw('MAX(CAST(SUBSTRING(clave_usuario FROM 4) AS INTEGER)) as max_num')
-            ->value('max_num');
-
-        $newNumber = $lastNumber ? $lastNumber + 1 : 1;
-        $validated['clave_usuario'] = 'CLI' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
-
-        $usuario = Usuario::create($validated);
-
-        Rol::create([
-            'clave_usuario' => $usuario->clave_usuario,
-            'email' => $usuario->email,
-            'password' => $usuario->password,
-            'rol' => 'cliente',
-        ]);
-    });
-
-    return response()->json([
-        'message' => 'Usuario registrado correctamente con rol asignado',
-        'usuario' => $usuario
-    ], 201);
-}
-
-
-
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        $usuario = Usuario::find($id);
-        if (!$usuario) return response()->json(['message' => 'Usuario no encontrado'], 404);
+        $validated = $request->validate([
+            'nombres'            => 'required|string|max:40',
+            'apellidos'          => 'required|string|max:40',
+            'fecha_nacimiento'   => 'required|date',
+            'telefono'           => 'required|string|max:15',
+            'email'              => 'required|email|unique:usuarios,email',
+            'password'           => 'required|string|min:6',
+            'sede'               => 'nullable|string|max:30',
+            'status'             => 'nullable|string|max:30',
+            'ruta_imagen'        => 'nullable|string',
+            'qr_imagen'          => 'nullable|string',
+            'rol'                => 'nullable|string|max:30'
+        ]);
+
+        // Valores por defecto
+        $validated['status'] = $validated['status'] ?? 'pendiente';
+        $validated['sede']   = $validated['sede'] ?? 'ninguno';
+        $validated['password'] = bcrypt($validated['password']);
+
+        $usuario = null;
+
+        DB::transaction(function() use (&$usuario, $validated) {
+
+            // Obtener último número de clave
+            $lastNumber = DB::table('usuarios')
+                ->selectRaw("MAX(CAST(SUBSTRING(clave_usuario FROM 4) AS INTEGER)) AS max_num")
+                ->value('max_num');
+
+            $newNumber = $lastNumber ? $lastNumber + 1 : 1;
+
+            $validated['clave_usuario'] = 'CLI' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+            // Crear usuario
+            $usuario = Usuario::create($validated);
+        });
+
+        return response()->json([
+            'message' => 'Usuario registrado correctamente',
+            'usuario' => $usuario
+        ], 201);
+    }
+
+    public function update(Request $request, $clave)
+    {
+        // Buscar usuario por clave_usuario
+        $usuario = Usuario::where('clave_usuario', $clave)->first();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
 
         $validated = $request->validate([
-            'nombres' => 'sometimes|string|max:40',
-            'apellidos' => 'sometimes|string|max:40',
+            'nombres'          => 'sometimes|string|max:40',
+            'apellidos'        => 'sometimes|string|max:40',
             'fecha_nacimiento' => 'sometimes|date',
-            'telefono' => 'sometimes|string|max:15',
-            'email' => 'sometimes|email|unique:usuarios,email,' . $id . ',clave_usuario',
-            'password' => 'sometimes|string|min:6',
-            'sede' => 'sometimes|string|max:30',
-            'status' => 'sometimes|string|max:30',
-            'ruta_imagen' => 'nullable|string',
-            'qr_imagen' => 'nullable|string',
+            'telefono'         => 'sometimes|string|max:15',
+            'email'            => 'sometimes|email|unique:usuarios,email,' . $usuario->clave_usuario . ',clave_usuario',
+            'password'         => 'sometimes|string|min:6',
+            'sede'             => 'sometimes|string|max:30',
+            'status'           => 'sometimes|string|max:30',
+            'rol'              => 'sometimes|string|max:30',
+            'ruta_imagen'      => 'nullable|string',
+            'qr_imagen'        => 'nullable|string',
         ]);
 
+        // Si mandan password, se encripta
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         }
 
         $usuario->update($validated);
 
-        if ($usuario->rol) {
-            $usuario->rol->update([
-                'password' => $usuario->password,
-                'email' => $usuario->email
-            ]);
-        }
-
-        return response()->json(['message' => 'Usuario actualizado', 'usuario' => $usuario]);
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente',
+            'usuario' => $usuario
+        ]);
     }
-
     public function destroy($id)
     {
         $usuario = Usuario::find($id);
-        if (!$usuario) return response()->json(['message' => 'Usuario no encontrado'], 404);
 
-        $usuario->rol()->delete();
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
         $usuario->delete();
 
-        return response()->json(['message' => 'Usuario y rol eliminados correctamente']);
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 
-    public function buscar(Request $request)
+    // Búsqueda con filtros
+    public function buscar($texto)
     {
-        $query = Usuario::query();
-
-        if ($request->sede) $query->where('sede', $request->sede);
-        if ($request->status) $query->where('status', $request->status);
-        if ($request->nombre) $query->where('nombres', 'LIKE', '%' . $request->nombre . '%');
-
-        return response()->json($query->get());
-    }
-    public function buscarUsuarios(Request $request)
-    {
-        $texto = $request->input('texto');
-
-        $usuarios = Usuarios::where('clave_usuario', 'LIKE', "%$texto%")
+        $usuarios = Usuario::where('clave_usuario', 'LIKE', "%$texto%")
             ->orWhere('nombres', 'LIKE', "%$texto%")
             ->orWhere('apellidos', 'LIKE', "%$texto%")
             ->orWhere('telefono', 'LIKE', "%$texto%")
             ->orWhere('email', 'LIKE', "%$texto%")
-            ->orWhere('status', 'LIKE', "%$texto%")
+            ->take(10)
             ->get();
 
         return response()->json($usuarios);
     }
 
+    // Búsqueda general por texto
+    public function buscarUsuarios(Request $request)
+    {
+        $texto = $request->input('texto');
+
+        $usuarios = Usuario::where('clave_usuario', 'LIKE', "%$texto%")
+            ->orWhere('nombres', 'LIKE', "%$texto%")
+            ->orWhere('apellidos', 'LIKE', "%$texto%")
+            ->orWhere('telefono', 'LIKE', "%$texto%")
+            ->orWhere('email', 'LIKE', "%$texto%")
+            ->orWhere('status', 'LIKE', "%$texto%")
+            ->orWhere('rol', 'LIKE', "%$texto%")
+            ->get();
+
+        return response()->json($usuarios);
+    }
+
+    public function login(Request $request)
+    {
+        // Validar datos recibidos
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+
+        // Buscar usuario por correo
+        $usuario = Usuario::where('email', $request->email)->first();
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Correo o contraseña incorrectos'
+            ], 401);
+        }
+
+        // Validar contraseña
+        if (!Hash::check($request->password, $usuario->password)) {
+            return response()->json([
+                'message' => 'Correo o contraseña incorrectos'
+            ], 401);
+        }
+
+        // Usuario válido
+        return response()->json([
+            'message' => 'Inicio de sesión correcto',
+            'usuario' => $usuario,
+            'rol'     => $usuario->rol   
+        ], 200);
+    }
+
+    public function eliminarUsuario($clave)
+    {
+        $usuario = Usuario::where('clave_usuario', $clave)->first();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        $usuario->status = 'eliminado';
+        $usuario->save();
+
+        return response()->json(['message' => 'Usuario marcado como eliminado']);
+    }
+
+    public function usuariosPorSede(Request $request)
+    {
+        $sede = $request->query('sede');
+
+        $query = Usuario::query();
+
+        // Excluir admins
+        $query->whereNotIn('rol', ['admin', 'admin1', 'admin2', 'superadmin']);
+
+        // No mostrar eliminados
+        $query->where(function($q){
+            $q->whereNull('status')
+            ->orWhere('status', '!=', 'eliminado');
+        });
+
+        // FILTRO DE SEDE CORRECTO
+        if ($sede) {
+            $query->where(function ($q) use ($sede) {
+                $q->where('sede', $sede)
+                ->orWhereNull('sede')
+                ->orWhere('sede', '')
+                ->orWhere('sede', 'ninguno');
+            });
+        }
+
+        return $query->get();
+    }
+
+    public function buscarUsuariosPorSede(Request $request)
+    {
+        $texto = $request->input('texto');
+        $sede = $request->input('sede');
+
+        $usuarios = Usuario::where('sede', $sede)
+            ->whereNotIn('rol', ['admin', 'admin1', 'admin2', 'superadmin'])
+            ->where(function($q) use ($texto) {
+                $q->where('clave_usuario', 'LIKE', "%$texto%")
+                ->orWhere('nombres', 'LIKE', "%$texto%")
+                ->orWhere('apellidos', 'LIKE', "%$texto%")
+                ->orWhere('telefono', 'LIKE', "%$texto%")
+                ->orWhere('email', 'LIKE', "%$texto%");
+            })
+            ->take(10)
+            ->get();
+            
+
+        return response()->json($usuarios);
+    }
 }

@@ -12,7 +12,13 @@ import { FormsModule } from '@angular/forms';
 })
 export class ClientRegistration {
 
-  today: string = new Date().toISOString().split('T')[0];
+  // Fecha de hoy en formato YYYY-MM-DD
+  today: string = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .split('T')[0];
+
+  // Recuperar sede del usuario logueado
+  sede = localStorage.getItem('sede') ?? '';
 
   usuario = {
     nombres: '',
@@ -24,71 +30,123 @@ export class ClientRegistration {
     fecha_corte: ''
   };
 
-  constructor(private usuarioService: UsuarioService) {}
-
-  registrarusuario() {
-    const now = new Date();
-    const fechaCorte = this.calcularFechaPago(now);
-
-    // Forzar fechas automáticas
-    this.usuario.fecha_inscripcion = this.today;
-    this.usuario.fecha_corte = fechaCorte.toISOString().split('T')[0];
-
-    const usuarioData = {
-      nombres: this.usuario.nombres,
-      apellidos: this.usuario.apellidos,
-      fecha_nacimiento: this.usuario.fecha_nacimiento,
-      telefono: this.usuario.telefono,
-      email: this.usuario.email,
-      password: this.usuario.email, // contraseña = email
-      fecha_inscripcion: this.usuario.fecha_inscripcion,
-      fecha_corte: this.usuario.fecha_corte,
-      sede: 'Principal',
-      ruta_imagen: '',
-      qr_imagen: ''
-    };
-
-    this.usuarioService.registrarUsuario(usuarioData).subscribe({
-      next: (resusuario) => {
-        const usuario_id = resusuario.usuario.id;
-
-        this.usuarioService.registrarUsuario({
-          usuario_id: usuario_id,
-          fecha_ingreso: now.toISOString(),
-          fecha_pago: fechaCorte.toISOString()
-        }).subscribe();
-
-        this.usuarioService.registrarPago({
-          usuario_id: usuario_id,
-          fecha: now.toISOString(),
-          monto_pendiente: 0
-        }).subscribe();
-
-        alert('Usuario registrado correctamente.');
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error al registrar usuario');
-      }
-    });
+  constructor(private usuarioService: UsuarioService) {
+    const { fechaPago, tipo_pago } = this.calcularFechaPago(new Date());
+    this.usuario.fecha_corte = fechaPago.toISOString().split('T')[0];
   }
 
-  private calcularFechaPago(fecha: Date): Date {
+
+
+registrarusuario() {
+  const now = new Date();
+  const { fechaPago, tipo_pago } = this.calcularFechaPago(now);
+
+  this.usuario.fecha_inscripcion = this.today;
+  this.usuario.fecha_corte = fechaPago.toISOString().split('T')[0];
+
+  const payload = {
+    nombres: this.usuario.nombres,
+    apellidos: this.usuario.apellidos,
+    fecha_nacimiento: this.usuario.fecha_nacimiento,
+    telefono: this.usuario.telefono,
+    email: this.usuario.email,
+    password: this.usuario.email,
+    fecha_inscripcion: this.usuario.fecha_inscripcion,
+    fecha_corte: this.usuario.fecha_corte,
+    tipo_pago: tipo_pago, // <-- aquí asignamos el tipo de pago
+    sede: this.sede,
+    status: "activo",
+    rol : "cliente",
+    ruta_imagen: null,
+    qr_imagen: null
+  };
+
+  // REGISTRAR USUARIO
+  this.usuarioService.registrarUsuario(payload).subscribe({
+    next: (res) => {
+      const clave = res.usuario.clave_usuario;
+
+      // REGISTRA ASISTENCIA
+      this.usuarioService.registrarAsistencia({
+        clave_cliente: clave,
+        fecha_diario: now.toISOString(),
+      }).subscribe({
+        next: () => {
+
+          // REGISTRA PAGO
+          this.usuarioService.registrarPago({
+            clave_cliente: clave,
+            fecha_ingreso: now.toISOString(),
+            fecha_corte: fechaPago.toISOString(),
+            Tipo_pago: tipo_pago, // <-- tipo de pago también en la tabla pagos
+            monto_pendiente: 0
+          }).subscribe({
+            next: () => {
+              alert('Usuario registrado correctamente.');
+              this.limpiarFormulario();
+            },
+            error: () => alert('Error al registrar pago')
+          });
+
+        },
+        error: () => alert('Error al registrar asistencia')
+      });
+
+    },
+    error: (err) => {
+      if (err.status === 422 && err.error?.errors?.email) {
+        alert('El correo ya está registrado.');
+      } else {
+        alert('Error al registrar usuario');
+      }
+    }
+  });
+}
+
+// CALCULAR FECHA DE PAGO
+  private calcularFechaPago(fecha: Date): { fechaPago: Date, tipo_pago: string } {
     const day = fecha.getDate();
     const mes = fecha.getMonth();
     const anio = fecha.getFullYear();
-    let fechaPago: Date;
 
-    if (day >= 28 || day <= 6) {
+    let fechaPago: Date;
+    let tipo_pago: string;
+
+    if (day >= 1 && day <= 6 || day >= 28) {
       fechaPago = day >= 28
         ? new Date(anio, mes + 1, 1)
         : new Date(anio, mes, 1);
+      tipo_pago = 'Mensual';
     } else if (day >= 15 && day <= 21) {
       fechaPago = new Date(anio, mes, 15);
+      tipo_pago = 'Quincenal';
     } else {
+      // Por defecto, si no cae en los rangos, se considera mensual
       fechaPago = new Date(anio, mes + 1, 1);
+      tipo_pago = 'Mensual';
     }
 
-    return fechaPago;
+    return { fechaPago, tipo_pago };
   }
+
+  get fechaCorteDia(): string {
+    if (!this.usuario.fecha_corte) return '';
+    const [anio, mes, dia] = this.usuario.fecha_corte.split('-');
+    return `${dia}`;
+  }
+
+
+  limpiarFormulario() {
+    this.usuario = {
+      nombres: '',
+      apellidos: '',
+      fecha_nacimiento: '',
+      telefono: '',
+      email: '',
+      fecha_inscripcion: this.today,   // se mantiene
+      fecha_corte: this.usuario.fecha_corte  // se mantiene
+    };
+  }
+
+
 }

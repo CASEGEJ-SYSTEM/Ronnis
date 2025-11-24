@@ -1,0 +1,125 @@
+<!-- Búsqueda -->
+<div class="flex justify-end mb-4">
+    <div class="relative w-full sm:w-64">
+        <svg xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+        </svg>
+        <input
+            type="text"
+            [(ngModel)]="busqueda"
+            (input)="buscar()"
+            placeholder="Buscar usuario..."
+            class="w-full bg-[#C25FA8] to-[#2b103f] font-bold py-2 pl-10 pr-4 rounded-lg text-black"
+        />
+
+        <!-- LISTA DE RESULTADOS -->
+        <ul *ngIf="resultadosBusqueda.length > 0"
+            class="absolute w-full bg-white border rounded-lg mt-1 z-50 shadow-lg">
+
+            <li *ngFor="let usuario of resultadosBusqueda"
+                (click)="seleccionarUsuario(usuario)"
+                class="px-4 py-2 cursor-pointer hover:bg-pink-200 text-gray-600">
+
+                {{ usuario.clave_usuario }} - {{ usuario.nombres }} {{ usuario.apellidos }}
+                <br>
+                <small class="text-gray-600">
+                    {{ usuario.telefono }} - {{ usuario.email }}
+                </small>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="container mx-auto max-w-4xl">
+    <div class="grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+        <div class="text-center">
+            <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro Pago</h1>
+            <div class="relative inline-block">
+                <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
+                    class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
+                <button class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700"
+                    title="Editar foto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    </svg>
+                </button>
+                <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
+                    class="absolute top-2 right-2 bg-cyan-500 p-3 rounded-full hover:bg-cyan-600"
+                    title="Ver estadísticas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        
+        
+        <div class="bg-white/10 p-8 rounded-2xl">
+            <div *ngIf="user">
+            <form class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                <label for="clave" class="text-black font-medium">Clave</label>
+                <input type="text" [(ngModel)]="user.clave_usuario" name="clave" class="input-field">
+                </div>
+                <div>
+                <label for="status" class="text-black font-medium">Status</label>
+                <input type="text" [(ngModel)]="user.status" name="status" class="input-field">
+                </div>
+                <div>
+                <label for="nombre" class="text-black font-medium">Nombre</label>
+                <input type="text" [(ngModel)]="user.nombres" name="nombres" class="input-field">
+                </div>
+                <div>
+                <label for="apellidos" class="text-black font-medium">Apellidos</label>
+                <input type="text" [(ngModel)]="user.apellidos" name="apellidos" class="input-field">
+                </div>
+
+                <div>
+                <label for="fecha_inscripcion" class="text-black font-medium">Fecha de Inscripción</label>
+                <input type="text" [value]="user.fecha_ingreso | date:'dd/MM/yyyy'" readonly class="input-field">
+                </div>
+                <div>
+                <label for="fecha_corte" class="text-black font-medium">Fecha de Corte</label>
+                <input type="text" [value]="user.fecha_corte | date:'dd/MM/yyyy'" readonly class="input-field">
+                </div>
+                <div>
+                <label for="saldo_pagar" class="text-black font-medium">Saldo a Pagar</label>
+                <input type="number" [value]="user.saldoPagar" readonly class="input-field">
+                </div>
+                <div>
+                <label for="proximo_fecha_corte" class="text-black font-medium">Próximo Corte</label>
+                <input type="text" [value]="user.proximoCorte | date:'dd/MM/yyyy'" readonly class="input-field">
+                </div>
+            </div>
+
+            <button type="button" (click)="guardarCambios()" class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">
+                Guardar Cambios
+            </button>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+    <a routerLink="/admin/pago" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+             viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+    </a>
+</div>

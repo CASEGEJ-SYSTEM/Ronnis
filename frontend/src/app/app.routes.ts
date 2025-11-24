@@ -12,6 +12,14 @@ export const routes: Routes = [
     {
         path: 'admin',
         loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule)
+    },    
+    {
+        path: 'superadmin',
+        loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule)
+    },
+    {
+        path: 'cliente',
+        loadChildren: () => import('./features/clients/clients.module').then(m => m.ClientsModule)
     },
     {
         path: 'auth',

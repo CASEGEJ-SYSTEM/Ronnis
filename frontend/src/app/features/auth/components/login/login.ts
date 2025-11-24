@@ -35,31 +35,32 @@ export class Login {
 
     this.http.post(`${environment.apiUrl}/api/login`, payload).subscribe({
       next: (response: any) => {
+
         this.isLoading.set(false);
 
-        // Guardar datos del usuario
         localStorage.setItem('usuario', JSON.stringify(response.usuario));
         localStorage.setItem('rol', response.rol);
+        localStorage.setItem('sede', response.usuario.sede ?? '');
 
         const rol = response.rol;
 
-        if (rol === 'administrador' || rol === 'admin') {
+        if (rol === 'admin1' || rol === 'admin2') {
           this.router.navigate(['/admin']);
+        } else if (rol === 'superadmin') {
+          this.router.navigate(['/superadmin']);
         } else if (rol === 'cliente') {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/cliente']);
         } else {
           this.loginError.set('Rol no reconocido.');
         }
       },
-      error: (error) => {
+
+      // 👇 AGREGAR ESTO
+      error: (err) => {
         this.isLoading.set(false);
-        if (error.status === 401) {
-          this.loginError.set('Correo o contraseña incorrectos.');
-        } else if (error.status === 0) {
-          this.loginError.set('No se pudo conectar con el servidor.');
-        } else {
-          this.loginError.set('Ocurrió un error inesperado.');
-        }
+        this.loginError.set(
+          err?.error?.message ?? 'Error de inicio de sesión.'
+        );
       }
     });
   }

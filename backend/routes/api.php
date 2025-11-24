@@ -16,21 +16,17 @@ use App\Http\Middleware\CorsMiddleware;
 // ---------- USUARIOS ----------
 
 Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::get('/usuarios/por-sede', [UsuarioController::class, 'usuariosPorSede']);
+
 Route::get('/usuarios/{clave_usuario}', [UsuarioController::class, 'show']);
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::put('/usuarios/{clave_usuario}', [UsuarioController::class, 'update']);
 Route::delete('/usuarios/{clave_usuario}', [UsuarioController::class, 'destroy']);
-Route::get('/buscar/usuarios/{texto}', [UsuarioController::class, 'buscar']);
+Route::put('/usuarios/{clave}/eliminar', [UsuarioController::class, 'eliminarUsuario']);
+Route::get('/usuarios/buscar/general/{texto}', [UsuarioController::class, 'buscarUsuarios']);
+Route::get('/usuarios/buscar/sede', [UsuarioController::class, 'buscarUsuariosPorSede']);
 
-
-// ---------- ROLES ----------
-Route::get('/roles', [RolController::class, 'index']);
-Route::get('/roles/{clave_usuario}', [RolController::class, 'show']);
-Route::post('/roles', [RolController::class, 'store']);
-Route::put('/roles/{clave_usuario}', [RolController::class, 'update']);
-Route::delete('/roles/{clave_usuario}', [RolController::class, 'destroy']);
-Route::get('/buscar/roles/{texto}', [RolController::class, 'buscar']);
-Route::post('/login', [RolController::class, 'login']);
+Route::post('/login', [UsuarioController::class, 'login']);
 
 // ---------- PAGOS ----------
 Route::get('/pagos', [PagoController::class, 'index']);
@@ -41,9 +37,11 @@ Route::delete('/pagos/{clave_cliente}', [PagoController::class, 'destroy']);
 Route::get('/buscar/pagos/{texto}', [PagoController::class, 'buscar']);
 
 // ---------- PERSONAL ----------
+
 Route::get('/personal', [PersonalController::class, 'index']);
 Route::get('/personal/{id}', [PersonalController::class, 'show']);
 Route::post('/personal', [PersonalController::class, 'store']);
+
 Route::put('/personal/{id}', [PersonalController::class, 'update']);
 Route::delete('/personal/{id}', [PersonalController::class, 'destroy']);
 Route::get('/buscar/personal/{texto}', [PersonalController::class, 'buscar']);

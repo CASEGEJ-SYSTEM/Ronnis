@@ -1,7 +1,45 @@
+<!-- Búsqueda -->
+<div class="flex justify-end mb-4">
+    <div class="relative w-full sm:w-64">
+        <svg xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+        </svg>
+        <input
+            type="text"
+            [(ngModel)]="busqueda"
+            (input)="buscar()"
+            placeholder="Buscar usuario..."
+            class="w-full bg-[#C25FA8] to-[#2b103f] font-bold py-2 pl-10 pr-4 rounded-lg text-black"
+        />
+
+        <!-- LISTA DE RESULTADOS -->
+        <ul *ngIf="resultadosBusqueda.length > 0"
+            class="absolute w-full bg-white border rounded-lg mt-1 z-50 shadow-lg">
+
+            <li *ngFor="let usuario of resultadosBusqueda"
+                (click)="seleccionarUsuario(usuario)"
+                class="px-4 py-2 cursor-pointer hover:bg-pink-200 text-gray-600">
+
+                {{ usuario.clave_usuario }} - {{ usuario.nombres }} {{ usuario.apellidos }}
+                <br>
+                <small class="text-gray-600">
+                    {{ usuario.telefono }} - {{ usuario.email }}
+                </small>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div class="container mx-auto max-w-4xl">
     <div class="grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
         <div class="text-center">
-            <h1 class="text-6xl font-extrabold mb-8">Usuario</h1>
+            <h1 class="font-atomic text-pink-600 text-7xl mb-8">Usuario</h1>
             <div class="relative inline-block">
                 <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
                     class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
@@ -12,7 +50,7 @@
                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                     </svg>
                 </button>
-                <a [routerLink]="['/admin/usuarios', user?.id, 'estadisticas']"
+                <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
                     class="absolute top-2 right-2 bg-cyan-500 p-3 rounded-full hover:bg-cyan-600"
                     title="Ver estadísticas">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -24,30 +62,68 @@
                 </a>
             </div>
         </div>
+
+        
+        
         <div class="bg-white/10 p-8 rounded-2xl">
+            <div *ngIf="user">
             <form class="space-y-4">
                 <div class="grid md:grid-cols-2 gap-4">
-                    <input type="text" [value]="user?.nombres" placeholder="Nombre" class="input-field">
-                    <input type="text" [value]="user?.apellidos" placeholder="Apellidos"
-                        class="input-field">
-                    <input type="text" [value]="user?.fecha_nacimiento" placeholder="Fecha de Nacimiento"
-                        class="input-field">
-                    <input type="tel" [value]="user?.telefono" placeholder="Número de Celular" class="input-field">
-                </div>
-                <input type="email" [value]="user?.email" placeholder="E-mail" class="input-field w-full">
-                <div class="grid md:grid-cols-2 gap-4">
-                <input type="text" [value]="user?.sede" placeholder="Sede" class="input-field ">
+                    <div>
+                        <label for="nombre" class="text-black font-medium">Nombre</label>
+                        <input type="text" [(ngModel)]="user.nombres" name="nombres" class="input-field">
+                    </div>
+                    <div>
+                        <label for="apellidos" class="text-black font-medium">Apellidos</label>
+                        <input type="text" [(ngModel)]="user.apellidos" name="apellidos" class="input-field">
+                    </div>
+                    <div>
+                        <label for="fecha-nacimiento" class="text-black font-medium">Fecha de Nacimiento</label>
+                        <input type="text" [(ngModel)]="user.fecha_nacimiento" name="fecha_nacimiento" class="input-field">
+                    </div>
+                    <div>
+                        <label for="telefono" class="text-black font-medium">Telefono</label>
+                        <input type="tel" [(ngModel)]="user.telefono" name="telefono" class="input-field">
+                    </div>
+                 </div>               
+                    <div>
+                        <label for="correo" class="text-black font-medium">Correo electrónico</label>
+                        <input type="email" [(ngModel)]="user.email" name="email" class="input-field" required class="input-field w-full">
+                    </div>
                 
-                <input type="text" [value]="user?.diasPagados" placeholder="Meses Pagados" class="input-field w-full">
-                </div>
-                <button type="submit"
-                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">Guardar Cambios</button>
+                    <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="sede" class="text-black font-medium">Sede</label>
+                        <select [(ngModel)]="user.sede" name="sede" class="input-field">
+                            <option value="Emiliano">Emiliano</option>
+                            <option value="Centro">Centro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="status" class="text-black font-medium">Status</label>
+                        <select [(ngModel)]="user.status" name="status" class="input-field">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    </div>
+                
+
+                <button type="button" (click)="guardarCambios()"
+                        class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">
+                    Guardar Cambios
+                </button>
+
             </form>
+            </div>
         </div>
     </div>
+
     <a routerLink="/admin/usuarios" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+             viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
         </svg>

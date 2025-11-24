@@ -7,14 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Personal extends Model
 {
-    use HasFactory;
-
     protected $table = 'personal';
+    protected $primaryKey = 'clave_personal';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'clave_personal',
         'nombre_completo',
         'puesto',
         'descripcion',
-        'ruta_imagen'
+        'ruta_imagen',
+        'sede',
+        'rol'
     ];
 }

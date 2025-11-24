@@ -9,6 +9,7 @@ import { UserStats } from './components/user-stats/user-stats';
 import { UserPay } from './components/user-pay/user-pay';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
+import { UserPayDetail } from './components/user-pay-detail/user-pay-detail';
 import { Logbook } from './components/logbook/logbook';
 import { TrainerEdit } from './components/trainer-edit/trainer-edit';
 
@@ -19,9 +20,10 @@ const routes: Routes = [
         children: [
             { path: 'registro', component: ClientRegistration },
             { path: 'usuarios', component: UserManagement },
-            { path: 'usuarios/:id/editar', component: UserDetail },
-            { path: 'usuarios/:id/estadisticas', component: UserStats },
+            { path: 'usuarios/:clave_usuario/editar', component: UserDetail },
+            { path: 'usuarios/:clave_usuario/estadisticas', component: UserStats },
             { path: 'pago', component: UserPay },
+            {path:  'pago/:clave_usuario/detallepago', component: UserPayDetail },
             { path: 'personal', component: TrainerManagement },
             { path: 'personal/nuevo', component: TrainerEdit },
             { path: 'precios', component: PriceManagement },

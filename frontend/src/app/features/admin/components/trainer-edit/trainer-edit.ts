@@ -13,11 +13,15 @@ import { UsuarioService } from '../../../../core/services/usuario.service';
 })
 export class TrainerEdit {
 
+  sede = localStorage.getItem('sede') ?? '';
+
   personal = {
     nombre_completo: '',
     puesto: '',
     descripcion: '',
-    ruta_imagen: ''
+    ruta_imagen: '',
+    sede: this.sede,
+    rol: 'personal'
   };
 
   constructor(private clienteService: UsuarioService) {}
@@ -27,7 +31,15 @@ export class TrainerEdit {
     this.clienteService.registrarPersonal(this.personal).subscribe({
       next: () => {
         alert('Personal registrado correctamente 🎉');
-        this.personal = { nombre_completo: '', puesto: '', descripcion: '', ruta_imagen: '' };
+
+        this.personal = {
+          nombre_completo: '',
+          puesto: '',
+          descripcion: '',
+          ruta_imagen: '',
+          sede: this.sede,
+          rol: 'personal'
+        };
       },
       error: (err) => {
         console.error(err);

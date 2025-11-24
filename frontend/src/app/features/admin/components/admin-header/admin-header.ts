@@ -1,18 +1,32 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-admin-header',
-    standalone: true,
-    imports: [RouterLink, RouterLinkActive],
-    templateUrl: './admin-header.html',
-    styleUrl: './admin-header.css',
+  selector: 'app-admin-header',
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, FormsModule, CommonModule],
+  templateUrl: './admin-header.html',
+  styleUrl: './admin-header.css',
 })
 export class AdminHeader {
-    constructor(private router: Router) { }
 
-    logout() {
-        // Simulación de volver a la página del login al cerrar sesión
-        this.router.navigate(['/auth/login']);
-    }
+  rol = localStorage.getItem('rol') ?? '';
+  sede = localStorage.getItem('sede')?.split(',') || [];
+
+  constructor(private router: Router) {}
+
+  changeSede() {
+
+    // Convertir a cadena antes de guardar
+    localStorage.setItem('sede', this.sede.join(','));
+
+    location.reload(); 
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/auth/login']);
+  }
 }

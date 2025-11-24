@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('personal', function (Blueprint $table) {
-            $table->id(); // PK
-            $table->string('nombre_completo', 150);
-            $table->string('puesto', 50);
+            $table->string('clave_personal', 8)->primary();
+            $table->string('nombre_completo', 60);
+            $table->string('puesto', 30);
             $table->text('descripcion')->nullable();
             $table->text('ruta_imagen')->nullable();
+            $table->string('sede', 20);
+            $table->string('rol', 20);
             $table->timestamps();
         });
     }

@@ -6,9 +6,23 @@ use Illuminate\Http\Request;
 
 class PagoController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
-        return response()->json(Pago::with('usuario')->get());
+        $query = Pago::with('usuario');
+
+        // Filtrar por tipo de pago
+        if ($request->has('tipo') && strtolower($request->tipo) !== 'todos') {
+            $query->where('Tipo_pago', $request->tipo); // "Mensual" o "Quincenal"
+        }
+
+        // Filtrar por sede
+        if ($request->has('sede') && $request->sede !== '') {
+            $query->whereHas('usuario', function($q) use ($request){
+                $q->where('sede', $request->sede);
+            });
+        }
+
+        return response()->json($query->get());
     }
 
     public function show($id)
