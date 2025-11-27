@@ -26,6 +26,8 @@ const routes: Routes = [
             {path:  'pago/:clave_usuario/detallepago', component: UserPayDetail },
             { path: 'personal', component: TrainerManagement },
             { path: 'personal/nuevo', component: TrainerEdit },
+            { path: 'personal/:clave_personal/editar', component: TrainerEdit },
+
             { path: 'precios', component: PriceManagement },
             { path: 'bitacora', component: Logbook },
             {

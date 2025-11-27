@@ -24,9 +24,11 @@ class Usuario extends Model
         'password',
         'sede',
         'status',
+        'peso_inicial',
         'ruta_imagen',
         'qr_imagen',
-        'rol'
+        'rol',
+        
     ];
 
     public function pagos()

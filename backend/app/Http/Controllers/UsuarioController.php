@@ -52,7 +52,8 @@ class UsuarioController extends Controller
             'status'             => 'nullable|string|max:30',
             'ruta_imagen'        => 'nullable|string',
             'qr_imagen'          => 'nullable|string',
-            'rol'                => 'nullable|string|max:30'
+            'rol'                => 'nullable|string|max:30',
+            'peso_inicial' => 'required|string|max:8'
         ]);
 
         // Valores por defecto
@@ -102,6 +103,7 @@ class UsuarioController extends Controller
             'sede'             => 'sometimes|string|max:30',
             'status'           => 'sometimes|string|max:30',
             'rol'              => 'sometimes|string|max:30',
+            'peso_inicial' => 'required|string|max:8',
             'ruta_imagen'      => 'nullable|string',
             'qr_imagen'        => 'nullable|string',
         ]);
@@ -256,4 +258,34 @@ class UsuarioController extends Controller
 
         return response()->json($usuarios);
     }
+
+
+public function subirFoto(Request $request, $clave)
+{
+    $request->validate([
+        'foto' => 'required|image|max:2048'
+    ]);
+
+    $usuario = Usuario::where('clave_usuario', $clave)->firstOrFail();
+
+    // Guardar imagen
+    $path = $request->file('foto')->store('usuarios', 'public');
+
+    // Eliminar foto anterior correctamente
+    if ($usuario->ruta_imagen) {
+        $oldPath = str_replace('storage/', '', $usuario->ruta_imagen);
+        if (\Storage::disk('public')->exists($oldPath)) {
+            \Storage::disk('public')->delete($oldPath);
+        }
+    }
+
+    // Guardar solo la ruta interna
+    $usuario->ruta_imagen = 'storage/' . $path;
+    $usuario->save();
+
+    return response()->json([
+        'ruta_imagen' => $usuario->ruta_imagen
+    ]);
+}
+
 }

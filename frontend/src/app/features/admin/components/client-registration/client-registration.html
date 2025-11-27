@@ -27,12 +27,16 @@
                 <input type="tel" id="numero" placeholder="+52 ··· ···· ···" [(ngModel)]="usuario.telefono" name="telefono" required class="input-field">
                 </div>
             </div>
-
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="peso_inicial" class="text-black font-medium">Peso Inicial</label>
+                <input type="text" id="peso_inicial" placeholder="86 Kg" [(ngModel)]="usuario.peso_inicial"  name="peso_inicial" required class="input-field">
+            </div>
             <div>
                 <label for="email" class="text-black font-medium">Correo electrónico</label>
                 <input type="email" id="email" placeholder="abc@gmail.com" [(ngModel)]="usuario.email" name="email" required class="input-field w-full">
             </div>
-
+        </div>
             <div class="grid md:grid-cols-2 gap-4">
                 <div>
                     <label class="text-black font-medium">Fecha de Inscripción</label>

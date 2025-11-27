@@ -34,28 +34,33 @@ class PersonalController extends Controller
             'nombre_completo' => 'required|string|max:150',
             'puesto' => 'required|string|max:50',
             'descripcion' => 'nullable|string',
-            'ruta_imagen' => 'nullable|string',
             'sede' => 'required|string|max:30',
-            'rol' => 'nullable|string|max:30'
+            'rol' => 'nullable|string|max:30',
+            'ruta_imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
 
+
         $validated['rol'] = $validated['rol'] ?? 'personal';
+
+        // Subir imagen si viene
+        if ($request->hasFile('ruta_imagen')) {
+            $path = $request->file('ruta_imagen')->store('personal', 'public');
+            $validated['ruta_imagen'] = "storage/$path";
+        }
+
 
         $personal = null;
 
         DB::transaction(function () use (&$personal, $validated) {
 
-            // Obtener el número mayor después de los primeros 4 caracteres (PERS)
             $lastNumber = DB::table('personal')
                 ->selectRaw("MAX(CAST(SUBSTRING(clave_personal FROM 5) AS INTEGER)) AS max_num")
                 ->value('max_num');
 
             $newNumber = $lastNumber ? $lastNumber + 1 : 1;
 
-            // Generar clave PERS001, PERS002...
             $validated['clave_personal'] = 'PERS' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
-            // Insertar registro
             $personal = Personal::create($validated);
         });
 
@@ -67,25 +72,54 @@ class PersonalController extends Controller
 
 
 
-
-    public function update(Request $request, $id)
+    public function update(Request $request, $clave)
     {
-        $item = Personal::find($id);
-        if (!$item) return response()->json(['message' => 'Registro no encontrado'], 404);
+        $personal = Personal::where('clave_personal', $clave)->firstOrFail();
 
-        $item->update($request->all());
-        return response()->json(['message' => 'Actualizado correctamente', 'data' => $item]);
+        $personal->nombre_completo = $request->nombre_completo;
+        $personal->puesto = $request->puesto;
+        $personal->descripcion = $request->descripcion;
+        $personal->sede = $request->sede;
+        $personal->rol = 'personal';
+
+        if ($request->hasFile('ruta_imagen')) {
+
+            if ($personal->ruta_imagen) {
+                $ruta = public_path($personal->ruta_imagen);
+                if (file_exists($ruta)) {
+                    unlink($ruta);
+                }
+            }
+
+            $rutaNueva = $request->file('ruta_imagen')->store('personal', 'public');
+            $personal->ruta_imagen = 'storage/' . $rutaNueva;
+        }
+
+
+        $personal->save();
+
+        return response()->json(['message' => 'Personal actualizado correctamente']);
     }
 
-    public function destroy($id)
-    {
-        $item = Personal::find($id);
-        if (!$item) return response()->json(['message' => 'Registro no encontrado'], 404);
 
+    public function destroy($clave_personal)
+    {
+        $item = Personal::where('clave_personal', $clave_personal)->first();
+
+        if (!$item) {
+            return response()->json(['message' => 'Registro no encontrado'], 404);
+        }
+
+        // Eliminar imagen física si existe
+        if ($item->ruta_imagen && file_exists(public_path($item->ruta_imagen))) {
+            unlink(public_path($item->ruta_imagen));
+        }
+
+        // Eliminar registro
         $item->delete();
+
         return response()->json(['message' => 'Eliminado correctamente']);
     }
-
     // Opcional: búsqueda por texto
     public function buscar(Request $request)
     {

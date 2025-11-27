@@ -3,27 +3,63 @@
         <h1 class="font-atomic text-pink-600 text-6xl sm:text-7xl">Personal</h1>
     </div>
 
+    <!-- CONTENEDOR DEL CARRUSEL -->
+    <div class="relative">
 
+        <!-- Botón IZQUIERDA -->
+        <button 
+          (click)="scrollLeft()"
+          class="absolute left-0 top-1/2 -translate-y-1/2 bg-black/60 text-white 
+                 p-3 rounded-full shadow-lg z-10 hover:bg-black">
+            ◀
+        </button>
 
-    <div class="text-black grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @for (trainer of trainersData; track trainer.id) {
-        <div class="bg-black/20 backdrop-blur-sm p-8 rounded-2xl shadow-lg text-left flex flex-col group hover:bg-purple-300/80 border-3 border-black/1 hover:border-purple-400 transition-colors">
-            <img [src]="trainer.image" alt="Foto de {{ trainer.name }}"
-                class="w-full h-72 object-cover rounded-lg mb-6 transform group-hover:scale-105 transition-transform duration-300">
-            <h3 class="text-2xl font-bold mb-2">{{ trainer.name }}</h3>
-            <p class="text-gray-700 flex-grow mb-4 text-sm">{{ trainer.description }}</p>
-            <div class="text-white flex space-x-2 mt-auto">
-                <button class="flex-1  bg-pink-600 hover:bg-pink-700 font-bold py-2 px-6 rounded-lg">Editar</button>
-                <button class="bg-gray-700 hover:bg-gray-800 font-bold p-2 rounded-lg flex items-center justify-center" title="Eliminar">
-                    <i class="ph ph-trash text-2xl"></i>
+        <!-- LISTA HORIZONTAL -->
+        <div 
+            #carousel
+            class="flex gap-8 overflow-x-auto scroll-smooth px-12 py-4 no-scrollbar">
+
+            @for (trainer of trainersData; track trainer.id) {
+            <div class="min-w-[280px] w-[280px] bg-black/20 backdrop-blur-sm p-6 rounded-2xl shadow-lg 
+                        flex-shrink-0 group hover:bg-purple-300/80 transition">
+
+                <img [src]="trainer.image" class="w-full h-60 object-cover rounded-lg mb-4">
+
+                <h3 class="text-xl text-black font-bold mb-1">{{ trainer.name }}</h3>
+                <p class="text-sm  text-black font-bold">{{ trainer.puesto }}</p>
+
+                <p class="text-gray-700 text-sm mb-4">{{ trainer.description }}</p>
+
+                <div class="flex space-x-2">
+                <button  
+                    [routerLink]="['/admin/personal', trainer.clave_personal, 'editar']"
+                    class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg">
+                    Editar
                 </button>
+
+
+
+                    <button (click)="eliminar(trainer.clave_personal)"
+                        class="bg-gray-700 hover:bg-gray-800 text-white font-bold p-2 rounded-lg">
+                        <i class="ph ph-trash text-xl"></i>
+                    </button>
+                </div>
             </div>
+            }
         </div>
-        }
+
+        <!-- Botón DERECHA -->
+        <button 
+          (click)="scrollRight()"
+          class="absolute right-0 top-1/2 -translate-y-1/2 bg-black/60 text-white 
+                 p-3 rounded-full shadow-lg z-10 hover:bg-black">
+            ▶
+        </button>
     </div>
 
     <div class="flex justify-center mt-12">
-        <button [routerLink]="['/admin/personal/nuevo']" class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-12 rounded-full text-lg">
+        <button [routerLink]="['/admin/personal/nuevo']"
+            class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-12 rounded-full text-lg">
             Agregar
         </button>
     </div>

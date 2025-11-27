@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UsuarioService } from '../../../../core/services/usuario.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-user-pay-detail',
@@ -14,9 +15,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserPayDetail implements OnInit {
 
-  user: any = null;
+  user: any = {};
+  pago: any = {};
   clave_usuario!: string;
-  // Variables de búsqueda
+
   busqueda: string = '';
   resultadosBusqueda: any[] = [];
 
@@ -25,93 +27,130 @@ export class UserPayDetail implements OnInit {
     private usuarioService: UsuarioService
   ) {}
 
-  calcularDiasPagados(fechaPago: string): number {
-    const hoy = new Date();
-    const fecha = new Date(fechaPago);
-
-    const diferencia = fecha.getTime() - hoy.getTime();
-    const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-
-    return dias >= 0 ? dias : 0;
+  ngOnInit() {
+    this.clave_usuario = String(this.route.snapshot.paramMap.get('clave_usuario'));
+    this.cargarUsuario(this.clave_usuario);
+    this.cargarPago(this.clave_usuario);
   }
 
-   cargarUsuario(clave_usuario: string) {
+  cargarUsuario(clave_usuario: string) {
     this.usuarioService.getUsuarioByClave(clave_usuario).subscribe({
-      next: (data) => this.user = data,
-      error: (err) => console.error('Error al cargar usuario:', err)
+      next: (data: any) => {
+        this.user = data || {};
+        if (this.user?.ruta_imagen) {
+          this.user.ruta_imagen = `${environment.apiUrl}/${this.user.ruta_imagen}`;
+        }
+      }
     });
-  } 
-
-// user-pay-detail.component.ts
-calcularSaldoYProximoCorte(usuario: any) {
-  if (!usuario.fecha_ingreso || !usuario.fecha_corte) return { saldo: 0, proximoCorte: null };
-
-  const fechaIngreso = new Date(usuario.fecha_ingreso);
-  const fechaCorte = new Date(usuario.fecha_corte);
-
-  // Saldo a pagar según día del mes
-  const dia = fechaIngreso.getDate();
-  let saldo = 0;
-  if (dia >= 28 || dia <= 14) {
-    saldo = 500;
-  } else if (dia >= 15 && dia <= 27) {
-    saldo = 800;
   }
 
-  // Próximo corte: sumar 1 mes a la fecha de corte actual
-  const proximoCorte = new Date(fechaCorte);
-  proximoCorte.setMonth(fechaCorte.getMonth() + 1);
+  cargarPago(clave_usuario: string) {
+    this.usuarioService.getPagosByClave(clave_usuario).subscribe({
+      next: (data: any) => {
+        this.pago = data || {};
 
-  return { saldo, proximoCorte };
-}
+        this.pago.monto_pagado = Number(this.pago.monto_pagado ?? 0);
+        this.pago.monto_pendiente = Number(this.pago.monto_pendiente ?? 500);
 
-ngOnInit() {
-  this.clave_usuario = String(this.route.snapshot.paramMap.get('clave_usuario'));
+        this.calcularProximoCorte();
+        this.calcularSaldoMostrado();
+      }
+    });
+  }
 
-  this.usuarioService.getUsuarioByClave(this.clave_usuario).subscribe({
-    next: (data) => {
-      this.user = data;
+  // -------- SALDO MOSTRADO --------
+  calcularSaldoMostrado() {
+    if (!this.pago.fecha_corte) return;
 
-      // Calcular días pagados
-      this.user.diasPagados = this.user.fecha_corte ? this.calcularDiasPagados(this.user.fecha_corte) : 0;
+    const corte = new Date(this.pago.fecha_corte);
+    const hoy = new Date();
+    const diff = (corte.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24);
 
-      // Calcular saldo y próximo corte
-      const { saldo, proximoCorte } = this.calcularSaldoYProximoCorte(this.user);
-      this.user.saldoPagar = saldo;
-      this.user.proximoCorte = proximoCorte;
-    },
-    error: (err) => console.error('Error al cargar usuario:', err)
-  });
-}
+    if (diff <= 5 && this.pago.monto_pendiente === 0) {
+      this.pago.saldo_mostrar = 500;
+    } else {
+      this.pago.saldo_mostrar = this.pago.monto_pendiente;
+    }
+  }
 
+  // -------- NUEVA LÓGICA CORREGIDA --------
+  calcularProximoCorte() {
+    if (!this.pago.fecha_corte) return;
+
+    const fecha = new Date(this.pago.fecha_corte);
+
+    // Detectar si es usuario nuevo
+    if (this.pago.monto_pagado_original === undefined) {
+      this.pago.monto_pagado_original = this.pago.monto_pagado;
+    }
+
+    const esNuevo = this.pago.monto_pagado_original === 0;
+
+    // ✔ Usuario nuevo pagando EXACTAMENTE 500 → no mover fecha
+    if (esNuevo && this.pago.monto_pagado === 500) {
+      this.pago.proximo_corte = fecha;
+      return;
+    }
+
+    // ✔ Si no ha pagado nada todavía
+    if (this.pago.monto_pagado === 0) {
+      this.pago.proximo_corte = fecha;
+      return;
+    }
+
+    // ✔ Calcular meses según el monto pagado
+    const meses = Math.floor(this.pago.monto_pagado / 500);
+    const nuevaFecha = new Date(fecha);
+    nuevaFecha.setMonth(nuevaFecha.getMonth() + meses);
+
+    this.pago.proximo_corte = nuevaFecha;
+  }
+
+  // -------- AL EDITAR MONTO --------
+  onMontoPagadoChange(value: any) {
+    const monto = Number(value ?? 0);
+    this.pago.monto_pagado = monto;
+
+    const nuevoSaldo = this.pago.monto_pendiente - monto;
+    this.pago.monto_pendiente = nuevoSaldo >= 0 ? nuevoSaldo : 0;
+
+    this.calcularProximoCorte();
+    this.calcularSaldoMostrado();
+  }
+
+  // -------- GUARDAR --------
   guardarCambios() {
-    if (!this.user) return;
+    const payload = {
+      monto_pagado: this.pago.monto_pagado,
+      monto_pendiente: this.pago.monto_pendiente,
+      fecha_corte: this.pago.proximo_corte.toISOString()
+    };
 
-    this.usuarioService.actualizarUsuario(this.clave_usuario, this.user)
-      .subscribe({
-        next: () => alert("Usuario actualizado"),
-        error: err => console.error(err)
-      });
+    this.usuarioService.actualizarPago(this.clave_usuario, payload).subscribe({
+      next: () => {
+        alert("Pago actualizado");
+        this.cargarPago(this.clave_usuario);
+      }
+    });
   }
 
-    buscar() {
+  // -------- BÚSQUEDA --------
+  buscar() {
     if (this.busqueda.trim().length < 2) {
-        this.resultadosBusqueda = [];
-        return;
+      this.resultadosBusqueda = [];
+      return;
     }
 
-    this.usuarioService.buscarUsuariosDeSede(this.busqueda, this.user?.sede).subscribe({
-        next: (data: any[]) => this.resultadosBusqueda = data,
-        error: (err: any) => console.error('Error en búsqueda:', err)
-    });
-    }
+    this.usuarioService.buscarUsuariosDeSede(this.busqueda, this.user?.sede || '')
+      .subscribe(data => this.resultadosBusqueda = data);
+  }
 
-    seleccionarUsuario(usuario: any) {
+  seleccionarUsuario(usuario: any) {
     this.resultadosBusqueda = [];
     this.busqueda = usuario.nombres;
     this.clave_usuario = usuario.clave_usuario;
-
-    this.cargarUsuario(this.clave_usuario);
-    }
+    this.cargarUsuario(usuario.clave_usuario);
+    this.cargarPago(usuario.clave_usuario);
+  }
 
 }

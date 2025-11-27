@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('password', 255);
             $table->string('sede', 20);
             $table->string('status', 20)->default('activo');
+            $table->string('peso_inicial', 8);
             $table->text('ruta_imagen')->nullable();
             $table->text('qr_imagen')->nullable();
             $table->string('rol', 20);

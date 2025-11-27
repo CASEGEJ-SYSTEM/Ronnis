@@ -10,7 +10,7 @@
     </div>
 
     <div class="p-2 rounded-2xl">
-        <form class="space-y-4" (ngSubmit)="registrarPersonal()" #form="ngForm">
+        <form class="space-y-4" (ngSubmit)="guardar()" #form="ngForm">
 
             <div>
                 
@@ -38,14 +38,38 @@
                        name="descripcion"
                        class="input-field">
             </div>
+            <div>
+            <label class="text-black font-medium">Fotografía</label>
+
+            <input type="file"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    class="input-field">
+            </div>
+
+            <!-- Vista previa -->
+            <div *ngIf="previewImage" class="mt-4">
+            <p class="text-black font-medium">Vista previa:</p>
+            <img [src]="previewImage" class="w-40 h-40 rounded-lg shadow-lg object-cover">
+            </div>
+
 
             <button type="submit"
                     class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
-                Registrar Personal
+                {{ modoEdicion ? 'Actualizar Información' : 'Registrar Personal' }}
             </button>
 
-        </form>
+
+        </form>     
     </div>
 
 </div>
-
+    <a routerLink="/admin/personal" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+    </a>   

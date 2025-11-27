@@ -102,7 +102,7 @@
 
           <!-- Nombre -->
           <td class="p-3">
-            <a [routerLink]="['/admin/usuarios', user.id, 'estadisticas']"
+            <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
                class="hover:text-pink-400 hover:underline">
               {{ user.nombres }} {{ user.apellidos }}
             </a>

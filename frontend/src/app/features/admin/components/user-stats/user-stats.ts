@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UsuarioService } from '../../../../core/services/usuario.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-user-stats',
@@ -29,7 +30,9 @@ export class UserStats implements OnInit {
 
   ngOnInit() {
     this.clave_usuario = this.route.snapshot.paramMap.get('clave_usuario') ?? '';
-
+ if (this.user?.ruta_imagen) {
+       
+      }
     if (!this.clave_usuario) {
       console.error("No se recibió clave_usuario en la ruta");
       return;
@@ -42,12 +45,20 @@ export class UserStats implements OnInit {
   // ================================
   //      CARGA DE DATOS
   // ================================
-  cargarUsuario(clave_usuario: string) {
+    cargarUsuario(clave_usuario: string) {
     this.usuarioService.getUsuarioByClave(clave_usuario).subscribe({
-      next: (data) => this.user = data,
-      error: (err) => console.error('Error al cargar usuario:', err)
+        next: (data) => {
+        this.user = data;
+
+        // 🔥 Agregar URL completa de imagen
+        if (this.user?.ruta_imagen) {
+            this.user.ruta_imagen = `${environment.apiUrl}/${this.user.ruta_imagen}`;
+        }
+        },
+        error: (err) => console.error('Error al cargar usuario:', err)
     });
-  }
+    }
+
 
   cargarPagos(clave_usuario: string) {
     this.usuarioService.getPagosByClave(clave_usuario).subscribe({
@@ -77,4 +88,5 @@ export class UserStats implements OnInit {
     this.cargarUsuario(this.clave_usuario);
     this.cargarPagos(this.clave_usuario);
     }
+
 }

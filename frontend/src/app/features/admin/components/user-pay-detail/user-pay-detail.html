@@ -41,79 +41,90 @@
         <div class="text-center">
             <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro Pago</h1>
             <div class="relative inline-block">
-                <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
+                <img 
+                    [src]="user?.ruta_imagen ? user.ruta_imagen : 'https://placehold.co/200x200/4a0e4e/FFF?text=User'"
+                    alt="Foto de perfil"
                     class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
-                <button class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700"
-                    title="Editar foto">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                    </svg>
-                </button>
-                <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
-                    class="absolute top-2 right-2 bg-cyan-500 p-3 rounded-full hover:bg-cyan-600"
-                    title="Ver estadísticas">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                </a>
             </div>
         </div>
 
-        
-        
         <div class="bg-white/10 p-8 rounded-2xl">
             <div *ngIf="user">
             <form class="space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
+                <!-- Campos informativos (solo lectura) -->
                 <div>
-                <label for="clave" class="text-black font-medium">Clave</label>
-                <input type="text" [(ngModel)]="user.clave_usuario" name="clave" class="input-field">
-                </div>
-                <div>
-                <label for="status" class="text-black font-medium">Status</label>
-                <input type="text" [(ngModel)]="user.status" name="status" class="input-field">
-                </div>
-                <div>
-                <label for="nombre" class="text-black font-medium">Nombre</label>
-                <input type="text" [(ngModel)]="user.nombres" name="nombres" class="input-field">
-                </div>
-                <div>
-                <label for="apellidos" class="text-black font-medium">Apellidos</label>
-                <input type="text" [(ngModel)]="user.apellidos" name="apellidos" class="input-field">
+                    <label class="text-black font-medium">Clave</label>
+                    <input type="text" [(ngModel)]="user.clave_usuario" name="clave" readonly class="input-field bg-gray-200">
                 </div>
 
                 <div>
-                <label for="fecha_inscripcion" class="text-black font-medium">Fecha de Inscripción</label>
-                <input type="text" [value]="user.fecha_ingreso | date:'dd/MM/yyyy'" readonly class="input-field">
+                    <label class="text-black font-medium">Status</label>
+                    <input type="text" [(ngModel)]="user.status" name="status" readonly class="input-field bg-gray-200">
                 </div>
+
                 <div>
-                <label for="fecha_corte" class="text-black font-medium">Fecha de Corte</label>
-                <input type="text" [value]="user.fecha_corte | date:'dd/MM/yyyy'" readonly class="input-field">
+                    <label class="text-black font-medium">Nombre</label>
+                    <input type="text" [(ngModel)]="user.nombres" name="nombres" readonly class="input-field bg-gray-200">
                 </div>
+
                 <div>
-                <label for="saldo_pagar" class="text-black font-medium">Saldo a Pagar</label>
-                <input type="number" [value]="user.saldoPagar" readonly class="input-field">
+                    <label class="text-black font-medium">Apellidos</label>
+                    <input type="text" [(ngModel)]="user.apellidos" name="apellidos" readonly class="input-field bg-gray-200">
                 </div>
+
+                <!-- Fechas provenientes de la tabla pagos (solo lectura) -->
                 <div>
-                <label for="proximo_fecha_corte" class="text-black font-medium">Próximo Corte</label>
-                <input type="text" [value]="user.proximoCorte | date:'dd/MM/yyyy'" readonly class="input-field">
+                    <label class="text-black font-medium">Fecha de Inscripción</label>
+                    <input type="text"
+                        [value]="pago.fecha_ingreso ? (pago.fecha_ingreso | date:'dd/MM/yyyy') : ''"
+                        readonly class="input-field bg-gray-200">
                 </div>
+
+                <div>
+                    <label class="text-black font-medium">Fecha de Corte (actual)</label>
+                    <input type="text"
+                        [value]="pago.fecha_corte ? (pago.fecha_corte | date:'dd/MM/yyyy') : ''"
+                        readonly class="input-field bg-gray-200">
+                </div>
+
+                <!-- Campos que el usuario puede actualizar: monto_pagado -->
+                <div>
+                    <label class="text-black font-medium">Saldo a Pagar</label>
+                    <input type="text"
+                        [value]="pago.saldo_mostrar ?? 0 | number:'1.0-0'"
+                        readonly class="input-field bg-gray-200">
+                </div>
+
+                <div>
+                    <label class="text-black font-medium">Próximo Corte</label>
+                    <input type="text"
+                        [value]="pago.proximo_corte ? (pago.proximo_corte | date:'dd/MM/yyyy') : ''"
+                        readonly class="input-field bg-gray-200">
+                </div>
+
+                <!-- ESTE campo sí puede editarse: monto_pagado (al guardar afecta a fecha_corte segun reglas) -->
+                <div class="md:col-span-2">
+                    <label class="text-black font-medium">Monto pagado</label>
+                    <input type="number"
+                        [(ngModel)]="pago.monto_pagado"
+                        name="monto_pagado"
+                        (ngModelChange)="onMontoPagadoChange($event)"
+                        class="input-field">
+                </div>
+
             </div>
 
             <button type="button" (click)="guardarCambios()" class="w-full mt-4 bg-pink-600 hover:bg-pink-700 font-bold py-3 rounded-lg">
                 Guardar Cambios
             </button>
             </form>
-
             </div>
         </div>
     </div>
 
     <a routerLink="/admin/pago" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+        <!-- icon -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
              viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2"

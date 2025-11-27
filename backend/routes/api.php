@@ -25,6 +25,7 @@ Route::delete('/usuarios/{clave_usuario}', [UsuarioController::class, 'destroy']
 Route::put('/usuarios/{clave}/eliminar', [UsuarioController::class, 'eliminarUsuario']);
 Route::get('/usuarios/buscar/general/{texto}', [UsuarioController::class, 'buscarUsuarios']);
 Route::get('/usuarios/buscar/sede', [UsuarioController::class, 'buscarUsuariosPorSede']);
+Route::post('/usuarios/{clave}/subir-foto', [UsuarioController::class, 'subirFoto']);
 
 Route::post('/login', [UsuarioController::class, 'login']);
 
@@ -42,8 +43,9 @@ Route::get('/personal', [PersonalController::class, 'index']);
 Route::get('/personal/{id}', [PersonalController::class, 'show']);
 Route::post('/personal', [PersonalController::class, 'store']);
 
-Route::put('/personal/{id}', [PersonalController::class, 'update']);
-Route::delete('/personal/{id}', [PersonalController::class, 'destroy']);
+Route::put('/personal/{clave_personal}', [PersonalController::class, 'update']);
+Route::delete('/personal/{clave_personal}', [PersonalController::class, 'destroy']);
+
 Route::get('/buscar/personal/{texto}', [PersonalController::class, 'buscar']);
 
 // ---------- ASISTENCIAS ----------

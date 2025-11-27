@@ -40,7 +40,7 @@ export class UsuarioService {
   //}
 
   buscarUsuarios(texto: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/buscar/usuarios/${texto}`);
+    return this.http.get<any[]>(`${environment.apiUrl}/api/usuarios/buscar/general/${texto}`);
   }
 
 
@@ -54,6 +54,10 @@ export class UsuarioService {
       params: { texto, sede }
     });
   }
+
+  actualizarPago(clave: string, data: any) {
+  return this.http.put<any>(`${this.pagosUrl}/${clave}`, data);
+}
 
 
   eliminarUsuario(clave_usuario: string) {
@@ -73,40 +77,53 @@ export class UsuarioService {
   }
 
 
+subirFoto(clave: string, formData: FormData) {
+  return this.http.post(`${this.apiUrl}/${clave}/subir-foto`, formData);
+}
 
 
 
   
 
-  // =====================================
-  //                PAGOS
-  // =====================================
 
   registrarPago(data: any): Observable<any> {
     return this.http.post<any>(this.pagosUrl, data);
   }
 
-  // =====================================
-  //             ASISTENCIAS
-  // =====================================
-
   registrarAsistencia(data: any): Observable<any> {
     return this.http.post<any>(this.asistenciasUrl, data);
   }
 
-  // =====================================
-  //               PERSONAL
-  // =====================================
 
-  registrarPersonal(data: any) {
-    return this.http.post<any>(`${environment.apiUrl}/api/personal`, data);
-  }
+
+  registrarPersonal(data: FormData) {
+  return this.http.post<any>(`${environment.apiUrl}/api/personal`, data);
+}
+
+
 
   getPagosByClave(clave_usuario: string) {
     return this.http.get(`${this.pagosUrl}/${clave_usuario}`);
   }
 
+  getPersonalByClave(clave: string) {
+    return this.http.get<any>(`${environment.apiUrl}/api/personal/${clave}`);
+  }
+  getPersonal(sede: string = '') {
+    let params: any = {};
+    if (sede !== '') params.sede = sede;
+    return this.http.get<any[]>(`${environment.apiUrl}/api/personal`, { params });
+  }
 
+
+  eliminarPersonal(clave: string) {
+    return this.http.delete(`${environment.apiUrl}/api/personal/${clave}`);
+  }
+
+ actualizarPersonal(clave: string, formData: FormData) {
+    return this.http.post(`${environment.apiUrl}/api/personal/${clave}?_method=PUT`, formData);
+  }
+ 
 
 
 }

@@ -27,7 +27,8 @@ export class ClientRegistration {
     telefono: '',
     email: '',
     fecha_inscripcion: this.today,
-    fecha_corte: ''
+    fecha_corte: '',
+    peso_inicial: ''  
   };
 
   constructor(private usuarioService: UsuarioService) {
@@ -58,7 +59,8 @@ registrarusuario() {
     status: "activo",
     rol : "cliente",
     ruta_imagen: null,
-    qr_imagen: null
+    qr_imagen: null,
+    peso_inicial: this.usuario.peso_inicial
   };
 
   // REGISTRAR USUARIO
@@ -79,7 +81,7 @@ registrarusuario() {
             fecha_ingreso: now.toISOString(),
             fecha_corte: fechaPago.toISOString(),
             Tipo_pago: tipo_pago, // <-- tipo de pago también en la tabla pagos
-            monto_pendiente: 0
+            monto_pendiente: 500
           }).subscribe({
             next: () => {
               alert('Usuario registrado correctamente.');
@@ -143,8 +145,9 @@ registrarusuario() {
       fecha_nacimiento: '',
       telefono: '',
       email: '',
-      fecha_inscripcion: this.today,   // se mantiene
-      fecha_corte: this.usuario.fecha_corte  // se mantiene
+      fecha_inscripcion: this.today,  
+      fecha_corte: this.usuario.fecha_corte,
+      peso_inicial: '',
     };
   }
 

@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UsuarioService } from '../../../../core/services/usuario.service';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-user-detail',
@@ -15,79 +16,151 @@ import { FormsModule } from '@angular/forms';
 export class UserDetail implements OnInit {
 
   user: any = null;
+  pago: any = null; // <----- IMPORTANTE
   clave_usuario!: string;
-  // Variables de búsqueda
+
   busqueda: string = '';
   resultadosBusqueda: any[] = [];
+
+  sede = localStorage.getItem('sede')?.split(',') || [];
 
   constructor(
     private route: ActivatedRoute,
     private usuarioService: UsuarioService
   ) {}
 
-  calcularDiasPagados(fechaPago: string): number {
-    const hoy = new Date();
-    const fecha = new Date(fechaPago);
-
-    const diferencia = fecha.getTime() - hoy.getTime();
-    const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-
-    return dias >= 0 ? dias : 0;
-  }
-
-   cargarUsuario(clave_usuario: string) {
-    this.usuarioService.getUsuarioByClave(clave_usuario).subscribe({
-      next: (data) => this.user = data,
-      error: (err) => console.error('Error al cargar usuario:', err)
-    });
-  } 
   ngOnInit() {
     this.clave_usuario = String(this.route.snapshot.paramMap.get('clave_usuario'));
 
-    this.usuarioService.getUsuarioByClave(this.clave_usuario).subscribe({
+    this.cargarUsuario(this.clave_usuario);
+    this.cargarPago(this.clave_usuario);
+  }
+
+  cargarUsuario(clave_usuario: string) {
+    this.usuarioService.getUsuarioByClave(clave_usuario).subscribe({
       next: (data) => {
         this.user = data;
 
-        if (this.user?.fecha_corte) {
-          this.user.diasPagados = this.calcularDiasPagados(this.user.fecha_corte);
-        } else {
-          this.user.diasPagados = 0;
+        if (this.user?.ruta_imagen) {
+          this.user.ruta_imagen = `${environment.apiUrl}/${this.user.ruta_imagen}`;
         }
-      },
-      error: (err) => {
-        console.error('Error al cargar usuario:', err);
+
+        this.user.sede = this.sede[0];
       }
     });
   }
 
-  guardarCambios() {
-    if (!this.user) return;
+  cargarPago(clave_usuario: string) {
+    this.usuarioService.getPagosByClave(clave_usuario).subscribe({
+      next: (data) => {
+        this.pago = data || null;
+      },
+      error: () => {
+        this.pago = null;
+      }
+    });
+  }
 
+  // ------------ CALCULAR FECHA DE PAGO IGUAL QUE REGISTRO -----------------
+  private calcularFechaPago(fecha: Date): { fechaPago: Date, tipo_pago: string } {
+    const day = fecha.getDate();
+    const mes = fecha.getMonth();
+    const anio = fecha.getFullYear();
+
+    let fechaPago: Date;
+    let tipo_pago: string;
+
+    if (day >= 1 && day <= 6 || day >= 28) {
+      fechaPago = day >= 28
+        ? new Date(anio, mes + 1, 1)
+        : new Date(anio, mes, 1);
+      tipo_pago = 'Mensual';
+    } else if (day >= 15 && day <= 21) {
+      fechaPago = new Date(anio, mes, 15);
+      tipo_pago = 'Quincenal';
+    } else {
+      fechaPago = new Date(anio, mes + 1, 1);
+      tipo_pago = 'Mensual';
+    }
+
+    return { fechaPago, tipo_pago };
+  }
+
+  // ------------------ GUARDAR CAMBIOS ------------------------
+  guardarCambios() {
+    const hoy = new Date();
+
+    // 1️⃣ Si NO tiene registro en pagos → CREARLO
+    if (!this.pago) {
+
+      const { fechaPago, tipo_pago } = this.calcularFechaPago(hoy);
+
+      const dataPago = {
+        clave_cliente: this.clave_usuario,
+        fecha_ingreso: hoy.toISOString(),
+        fecha_corte: fechaPago.toISOString(),
+        Tipo_pago: tipo_pago,
+        monto_pendiente: 500
+      };
+
+      this.usuarioService.registrarPago(dataPago).subscribe({
+        next: () => {
+          console.log("Pago inicial creado");
+          this.actualizarUsuario();
+        },
+        error: () => alert("Error al crear pago inicial")
+      });
+
+      return;
+    }
+
+    // 2️⃣ Si ya tenía pago → solo actualizar usuario
+    this.actualizarUsuario();
+  }
+
+  private actualizarUsuario() {
     this.usuarioService.actualizarUsuario(this.clave_usuario, this.user)
       .subscribe({
         next: () => alert("Usuario actualizado"),
-        error: err => console.error(err)
+        error: () => alert("Error al actualizar usuario")
       });
   }
 
-    buscar() {
+  // ---------- BUSQUEDA -------------------
+  buscar() {
     if (this.busqueda.trim().length < 2) {
-        this.resultadosBusqueda = [];
-        return;
+      this.resultadosBusqueda = [];
+      return;
     }
 
     this.usuarioService.buscarUsuariosDeSede(this.busqueda, this.user?.sede).subscribe({
-        next: (data: any[]) => this.resultadosBusqueda = data,
-        error: (err: any) => console.error('Error en búsqueda:', err)
+      next: (data: any[]) => this.resultadosBusqueda = data
     });
-    }
+  }
 
-    seleccionarUsuario(usuario: any) {
+  seleccionarUsuario(usuario: any) {
     this.resultadosBusqueda = [];
     this.busqueda = usuario.nombres;
     this.clave_usuario = usuario.clave_usuario;
 
     this.cargarUsuario(this.clave_usuario);
-    }
+    this.cargarPago(this.clave_usuario);
+  }
+
+  subirFoto(event: any) {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append('foto', archivo);
+
+    this.usuarioService.subirFoto(this.clave_usuario, formData)
+      .subscribe({
+        next: (resp: any) => {
+          this.user.ruta_imagen = `${environment.apiUrl}/${resp.ruta_imagen}`;
+          alert("Foto actualizada");
+        }
+      });
+  }
 
 }

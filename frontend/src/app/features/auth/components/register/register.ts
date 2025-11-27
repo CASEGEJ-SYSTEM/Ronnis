@@ -47,6 +47,7 @@ export class Register {
       sede               : "ninguno",
       status             : "pendiente",
       rol                : "cliente",
+      peso_inicial       : "0 kg",
       
       ruta_imagen        : null,
       qr_imagen          : null

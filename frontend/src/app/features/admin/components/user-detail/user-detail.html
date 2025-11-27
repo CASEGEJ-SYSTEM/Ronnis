@@ -41,15 +41,19 @@
         <div class="text-center">
             <h1 class="font-atomic text-pink-600 text-7xl mb-8">Usuario</h1>
             <div class="relative inline-block">
-                <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
+               <img 
+                    [src]="user?.ruta_imagen ? user.ruta_imagen : 'https://placehold.co/200x200/4a0e4e/FFF?text=User'"
+                    alt="Foto de perfil"
                     class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
-                <button class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700"
-                    title="Editar foto">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button 
+                    (click)="fileInput.click()"
+                    class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                        fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                     </svg>
                 </button>
+                <input type="file" accept="image/*" #fileInput hidden (change)="subirFoto($event)" />
                 <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
                     class="absolute top-2 right-2 bg-cyan-500 p-3 rounded-full hover:bg-cyan-600"
                     title="Ver estadísticas">
@@ -85,19 +89,23 @@
                         <label for="telefono" class="text-black font-medium">Telefono</label>
                         <input type="tel" [(ngModel)]="user.telefono" name="telefono" class="input-field">
                     </div>
-                 </div>               
+                    <div>
+                        <label for="peso_inicial" class="text-black font-medium">Peso Inicial</label>
+                        <input type="text" [(ngModel)]="user.peso_inicial" name="peso_inicial" class="input-field" required class="input-field w-full">
+                    </div>
                     <div>
                         <label for="correo" class="text-black font-medium">Correo electrónico</label>
                         <input type="email" [(ngModel)]="user.email" name="email" class="input-field" required class="input-field w-full">
                     </div>
+
+                 </div>               
+                    
                 
                     <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label for="sede" class="text-black font-medium">Sede</label>
-                        <select [(ngModel)]="user.sede" name="sede" class="input-field">
-                            <option value="Emiliano">Emiliano</option>
-                            <option value="Centro">Centro</option>
-                        </select>
+                        <input type="text" [(ngModel)]="user.sede" name="sede" class="input-field">
+
                     </div>
                     <div>
                         <label for="status" class="text-black font-medium">Status</label>
