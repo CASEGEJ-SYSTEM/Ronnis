@@ -55,19 +55,24 @@ export class UsuarioService {
     });
   }
 
-  actualizarPago(clave: string, data: any) {
-  return this.http.put<any>(`${this.pagosUrl}/${clave}`, data);
-}
-
 
   eliminarUsuario(clave_usuario: string) {
     return this.http.put(`${this.apiUrl}/${clave_usuario}/eliminar`, {});
   }
 
-  getPersonalPorSede(sede: string) {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/personal`, { params: { sede } });
+
+  // =====================================
+  //               Pagos
+  // =====================================
+
+
+  registrarPago(data: any): Observable<any> {
+    return this.http.post<any>(this.pagosUrl, data);
   }
 
+  actualizarPago(clave: string, data: any) {
+    return this.http.put<any>(`${this.pagosUrl}/${clave}`, data);
+  }
 
   getPagos(tipo: string = 'todos', sede: string = '') {
     let params: any = {};
@@ -76,35 +81,34 @@ export class UsuarioService {
     return this.http.get<any[]>(this.pagosUrl, { params });
   }
 
-
-subirFoto(clave: string, formData: FormData) {
-  return this.http.post(`${this.apiUrl}/${clave}/subir-foto`, formData);
-}
-
-
-
-  
-
-
-  registrarPago(data: any): Observable<any> {
-    return this.http.post<any>(this.pagosUrl, data);
+  getPagosByClave(clave_usuario: string) {
+    return this.http.get(`${this.pagosUrl}/${clave_usuario}`);
   }
 
+  subirFoto(clave: string, formData: FormData) {
+    return this.http.post(`${this.apiUrl}/${clave}/subir-foto`, formData);
+  }
+
+
+
+ 
+  // =====================================
+  //               Asistencias
+  // =====================================
+ 
   registrarAsistencia(data: any): Observable<any> {
     return this.http.post<any>(this.asistenciasUrl, data);
   }
 
-
+  // =====================================
+  //               Personal
+  // =====================================
+ 
 
   registrarPersonal(data: FormData) {
-  return this.http.post<any>(`${environment.apiUrl}/api/personal`, data);
-}
-
-
-
-  getPagosByClave(clave_usuario: string) {
-    return this.http.get(`${this.pagosUrl}/${clave_usuario}`);
+    return this.http.post<any>(`${environment.apiUrl}/api/personal`, data);
   }
+
 
   getPersonalByClave(clave: string) {
     return this.http.get<any>(`${environment.apiUrl}/api/personal/${clave}`);
@@ -123,7 +127,10 @@ subirFoto(clave: string, formData: FormData) {
  actualizarPersonal(clave: string, formData: FormData) {
     return this.http.post(`${environment.apiUrl}/api/personal/${clave}?_method=PUT`, formData);
   }
- 
+
+  getPersonalPorSede(sede: string) {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/personal`, { params: { sede } });
+  }
 
 
 }

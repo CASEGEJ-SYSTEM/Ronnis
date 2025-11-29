@@ -148,6 +148,7 @@ export class UserPayDetail implements OnInit {
   seleccionarUsuario(usuario: any) {
     this.resultadosBusqueda = [];
     this.busqueda = usuario.nombres;
+    this.busqueda = '';
     this.clave_usuario = usuario.clave_usuario;
     this.cargarUsuario(usuario.clave_usuario);
     this.cargarPago(usuario.clave_usuario);

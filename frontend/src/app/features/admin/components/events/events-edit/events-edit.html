@@ -1,0 +1,124 @@
+<div class="grid grid-cols-3 items-center mb-12">
+
+    <div></div>
+
+    <h1 class="font-atomic text-pink-600 text-7xl text-center whitespace-nowrap relative"
+    style="left: -15%;">
+        Registro de Eventos
+    </h1>
+
+    <div class="flex justify-end">
+        <div class="relative w-full sm:w-64">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
+
+            <input
+                type="text"
+                [(ngModel)]="busqueda"
+                placeholder="Buscar evento..."
+                class="w-full bg-[#C25FA8] border-transparent font-bold py-2 pl-8 pr-4 rounded-lg text-white"
+                (input)="buscarEventos()"
+            />
+
+            <!-- LISTA DE RESULTADOS -->
+            <ul *ngIf="resultados.length > 0"
+                class="absolute mt-1 w-full bg-white shadow-xl rounded-lg max-h-60 overflow-y-auto z-50">
+
+                <li *ngFor="let item of resultados"
+                    (click)="seleccionarEvento(item)"
+                    class="px-4 py-2 cursor-pointer hover:bg-gray-200">
+
+                    <p class="font-bold text-black">{{ item.clave_eventos }}</p>
+                    <p class="text-sm text-gray-700">{{ item.titulo }}</p>
+                    <p class="text-xs text-gray-500 truncate">{{ item.descripcion }}</p>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+
+    <!-- COLUMNA IZQUIERDA – Vista Previa -->
+    <div class="text-center">
+
+        <div class="flex flex-col items-center">
+
+            <p class="text-black font-medium mb-2">Vista previa:</p>
+
+            <div class="rounded-2xl overflow-hidden shadow-xl"
+                style="width: 500px; height: 350px;">
+
+                <img 
+                    [src]="previewImage || 'images/fitness1.webp'"
+                    alt="Imagen del evento"
+                    class="w-full h-full object-cover"
+                >
+            </div>
+
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA – FORMULARIO -->
+    <div class="p-2 rounded-2xl">
+        <form class="space-y-4" (ngSubmit)="guardar()" #form="ngForm">
+
+            <div>
+                <label class="text-black font-medium">Título</label>
+                <input type="text"
+                       placeholder="Clase especial de Zumba"
+                       [(ngModel)]="eventos.titulo"
+                       name="titulo"
+                       required
+                       class="input-field">
+            </div>
+
+            <div>
+                <label class="text-black font-medium">Descripción</label>
+                <input type="text"
+                       placeholder="Actividad dirigida para todos los niveles, cupo limitado."
+                       [(ngModel)]="eventos.descripcion"
+                       name="descripcion"
+                       class="input-field">
+            </div>
+
+            <div>
+                <label class="text-black font-medium">Fotografía</label>
+                <input type="file"
+                       accept="image/*"
+                       (change)="onFileSelected($event)"
+                       class="input-field">
+            </div>
+
+            <button type="submit"
+                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
+                {{ modoEdicion ? 'Actualizar Información' : 'Registrar evento' }}
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+<!-- BOTÓN DE REGRESO -->
+<a routerLink="/admin/eventos"
+    class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+        viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
+    </svg>
+</a>

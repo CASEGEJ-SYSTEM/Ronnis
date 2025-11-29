@@ -50,7 +50,6 @@ export class UserStats implements OnInit {
         next: (data) => {
         this.user = data;
 
-        // 🔥 Agregar URL completa de imagen
         if (this.user?.ruta_imagen) {
             this.user.ruta_imagen = `${environment.apiUrl}/${this.user.ruta_imagen}`;
         }
@@ -83,6 +82,7 @@ export class UserStats implements OnInit {
     seleccionarUsuario(usuario: any) {
     this.resultadosBusqueda = [];
     this.busqueda = usuario.nombres;
+    this.busqueda = '';   
     this.clave_usuario = usuario.clave_usuario;
 
     this.cargarUsuario(this.clave_usuario);

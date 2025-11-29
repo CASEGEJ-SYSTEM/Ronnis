@@ -44,18 +44,16 @@ export class Login {
 
         const rol = response.rol;
 
-        if (rol === 'admin1' || rol === 'admin2') {
+        if (rol === 'admin1' || rol === 'admin2' || rol === 'superadmin') {
           this.router.navigate(['/admin']);
-        } else if (rol === 'superadmin') {
-          this.router.navigate(['/superadmin']);
-        } else if (rol === 'cliente') {
+        }else if (rol === 'cliente') {
           this.router.navigate(['/cliente']);
         } else {
           this.loginError.set('Rol no reconocido.');
         }
       },
 
-      // 👇 AGREGAR ESTO
+      
       error: (err) => {
         this.isLoading.set(false);
         this.loginError.set(

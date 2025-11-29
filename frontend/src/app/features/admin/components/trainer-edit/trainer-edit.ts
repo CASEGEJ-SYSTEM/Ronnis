@@ -13,7 +13,7 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./trainer-edit.css']
 })
 export class TrainerEdit implements OnInit {
-
+  personalData: any[] = [];
   sede = localStorage.getItem('sede') ?? '';
 
   clave!: string;
@@ -36,6 +36,7 @@ export class TrainerEdit implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.usuarioService.getPersonal(this.sede).subscribe(data => this.personalData = data);
     const param = this.route.snapshot.paramMap.get('clave_personal');
 
     if (param === null || param === 'nuevo') {
@@ -167,5 +168,48 @@ export class TrainerEdit implements OnInit {
 
     alert('Error inesperado en el servidor');
   }
+
+
+
+  busqueda = '';
+
+  resultados: any[] = [];
+
+  // Se ejecuta al escribir
+  buscarPersonal() {
+    const texto = this.busqueda.toLowerCase().trim();
+    if (texto.length === 0) {
+      this.resultados = [];
+      return;
+    }
+
+    this.resultados = this.personalData.filter(ev =>
+      ev.clave_personal.toLowerCase().includes(texto) ||
+      ev.titulo.toLowerCase().includes(texto) ||
+      ev.descripcion?.toLowerCase().includes(texto)
+    );
+  }
+
+  // Cuando da clic en un resultado
+  seleccionarPersonal(ev: any) {
+    this.busqueda = ev.titulo;
+    this.resultados = [];
+    this.busqueda = '';     
+    this.resultados = []; 
+    this.clave = ev.clave_personal;
+    this.modoEdicion = true;
+
+    this.personal = {
+      titulo: ev.titulo,
+      descripcion: ev.descripcion,
+      sede: ev.sede
+    };
+
+    if (ev.ruta_imagen) {
+      this.previewImage = `${environment.apiUrl}/${ev.ruta_imagen}`;
+    }
+  }
+
+
 
 }

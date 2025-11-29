@@ -33,21 +33,16 @@
                         <div class="info-field">{{ user?.peso_inicial}}</div>
                     </div>
                     <div>
-                        <label class="info-label">Correo</label>
-                        <div class="info-field">{{ user?.email }}</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
                         <label class="info-label">Número de Celular</label>
                         <div class="info-field">{{ user?.telefono }}</div>
                     </div>
-                    <div>
-                        <label class="info-label">Fecha de Inscripción</label>
-                        <div class="info-field">{{ pago?.fecha_ingreso | date:'dd/MM/yyyy' }}</div>
-                    </div>
+                   
                 </div>
+                    <div>
+                        <label class="info-label">Correo</label>
+                        <div class="info-field">{{ user?.email }}</div>
+                    </div>
+                
             </div>
         </div>
 
@@ -83,8 +78,8 @@
                         <li *ngFor="let usuario of resultadosBusqueda"
                             (click)="seleccionarUsuario(usuario)"
                             class="px-4 py-2 cursor-pointer hover:bg-pink-200 text-gray-600">
-
-                            {{ usuario.clave_usuario }} - {{ usuario.nombres }} {{ usuario.apellidos }}
+                            <p class="font-bold text-black">{{ usuario.clave_usuario }}</p>
+                            {{ usuario.nombres }} {{ usuario.apellidos }}
                             <br>
                             <small class="text-gray-600">
                                 {{ usuario.telefono }} - {{ usuario.email }}
@@ -166,6 +161,10 @@
                     </div>
                 </div>
                 <div class="space-y-4">
+                     <div>
+                        <label class="info-label">Fecha de Inscripción</label>
+                        <div class="info-field text-center">{{ pago?.fecha_ingreso | date:'dd/MM/yyyy' }}</div>
+                    </div>
                     <div>
                         <label class="info-label">Fecha de Corte</label>
                         <div class="info-field text-center">{{ pago?.fecha_corte | date:'dd/MM/yyyy' }}</div>

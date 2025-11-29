@@ -1,32 +1,68 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, FormsModule, CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css',
 })
-export class AdminHeader {
+export class AdminHeader implements OnInit {
 
-  rol = localStorage.getItem('rol') ?? '';
-  sede = localStorage.getItem('sede')?.split(',') || [];
+  rol = '';
+  sede = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router
+  ) {}
+
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.rol = localStorage.getItem('rol') ?? '';
+
+      const sedeGuardada = localStorage.getItem('sede') ?? '';
+
+      if (this.rol === 'superadmin') {
+
+        let sedes = sedeGuardada.split(',').map(s => s.trim());
+
+        // Si hay varias sedes → seleccionar la primera y guardar
+        if (sedes.length > 1) {
+          this.sede = sedes[0];
+          localStorage.setItem('sede', this.sede); 
+        } else {
+          this.sede = sedeGuardada;
+        }
+
+      } else {
+        this.sede = sedeGuardada;
+      }
+    }
+  }
 
   changeSede() {
-
-    // Convertir a cadena antes de guardar
-    localStorage.setItem('sede', this.sede.join(','));
-
-    location.reload(); 
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('sede', this.sede);
+      location.reload();
+    }
   }
 
   logout() {
-    localStorage.clear();
-    this.router.navigate(['/auth/login']);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.clear();
+      this.router.navigate(['/login']);   // o la ruta correcta de tu login
+    }
   }
+
 }

@@ -8,6 +8,8 @@ import { Footer } from '../../../../shared/components/footer/footer';
 import { HeroSection } from '../hero-section/hero-section';
 import { AboutUsSection } from '../about-us-section/about-us-section';
 import { EventsSection } from '../events-sections/events-section';
+import { InstalacionesSection } from '../instalaciones-section/instalaciones-section';
+import { EntrenamientosSection } from '../entrenamientos-section/entrenamientos-section';
 import { TrainersSection } from '../trainers-section/trainers-section';
 import { PriceManagement } from '../price-management/price-management';
 import { LocationSection } from '../location-section/location-section';
@@ -23,6 +25,8 @@ import { LocationSection } from '../location-section/location-section';
         HeroSection,
         AboutUsSection,
         EventsSection,
+        InstalacionesSection,
+        EntrenamientosSection,
         TrainersSection,
         PriceManagement,
         LocationSection

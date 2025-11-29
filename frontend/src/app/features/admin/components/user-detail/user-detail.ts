@@ -16,7 +16,7 @@ import { environment } from '../../../../../environments/environment';
 export class UserDetail implements OnInit {
 
   user: any = null;
-  pago: any = null; // <----- IMPORTANTE
+  pago: any = null; 
   clave_usuario!: string;
 
   busqueda: string = '';
@@ -86,11 +86,11 @@ export class UserDetail implements OnInit {
     return { fechaPago, tipo_pago };
   }
 
-  // ------------------ GUARDAR CAMBIOS ------------------------
+  
   guardarCambios() {
     const hoy = new Date();
 
-    // 1️⃣ Si NO tiene registro en pagos → CREARLO
+    // Si NO tiene registro en pagos → CREARLO
     if (!this.pago) {
 
       const { fechaPago, tipo_pago } = this.calcularFechaPago(hoy);
@@ -114,7 +114,7 @@ export class UserDetail implements OnInit {
       return;
     }
 
-    // 2️⃣ Si ya tenía pago → solo actualizar usuario
+    // Si ya tenía pago → solo actualizar usuario
     this.actualizarUsuario();
   }
 
@@ -141,6 +141,7 @@ export class UserDetail implements OnInit {
   seleccionarUsuario(usuario: any) {
     this.resultadosBusqueda = [];
     this.busqueda = usuario.nombres;
+    this.busqueda = '';   
     this.clave_usuario = usuario.clave_usuario;
 
     this.cargarUsuario(this.clave_usuario);

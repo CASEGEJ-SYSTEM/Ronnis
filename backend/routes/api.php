@@ -5,6 +5,9 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\EventosController;
+use App\Http\Controllers\EntrenamientosController;
+use App\Http\Controllers\InstalacionesController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Middleware\CorsMiddleware;
 /*
@@ -55,3 +58,32 @@ Route::post('/asistencias', [AsistenciaController::class, 'store']);
 Route::put('/asistencias/{clave_cliente}', [AsistenciaController::class, 'update']);
 Route::delete('/asistencias/{clave_cliente}', [AsistenciaController::class, 'destroy']);
 Route::get('/buscar/asistencias/{texto}', [AsistenciaController::class, 'buscar']);
+
+
+// ---------- EVENTOS ----------
+
+Route::get('/eventos', [EventosController::class, 'index']);
+Route::post('/eventos', [EventosController::class, 'store']);
+Route::get('/eventos/{id}', [EventosController::class, 'show']);
+Route::put('/eventos/{clave_eventos}', [EventosController::class, 'update']);
+Route::delete('/eventos/{clave_eventos}', [EventosController::class, 'destroy']);
+Route::get('/buscar/eventos/{texto}', [EventosController::class, 'buscar']);
+
+
+// ---------- ENTRENAMIENTOS ----------
+
+Route::get('/entrenamientos', [EntrenamientosController::class, 'index']);
+Route::post('/entrenamientos', [EntrenamientosController::class, 'store']);
+Route::get('/entrenamientos/{id}', [EntrenamientosController::class, 'show']);
+Route::put('/entrenamientos/{clave_entrenamientos}', [EntrenamientosController::class, 'update']);
+Route::delete('/entrenamientos/{clave_entrenamientos}', [EntrenamientosController::class, 'destroy']);
+Route::get('/buscar/entrenamientos/{texto}', [EntrenamientosController::class, 'buscar']);
+
+// ---------- INSTALACIONES ----------
+
+Route::get('/instalaciones', [InstalacionesController::class, 'index']);
+Route::post('/instalaciones', [InstalacionesController::class, 'store']);
+Route::get('/instalaciones/{id}', [InstalacionesController::class, 'show']);
+Route::put('/instalaciones/{clave_instalaciones}', [InstalacionesController::class, 'update']);
+Route::delete('/instalaciones/{clave_instalaciones}', [InstalacionesController::class, 'destroy']);
+Route::get('/buscar/instalaciones/{texto}', [InstalacionesController::class, 'buscar']);

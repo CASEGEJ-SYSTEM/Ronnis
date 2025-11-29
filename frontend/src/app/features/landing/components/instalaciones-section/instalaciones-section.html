@@ -1,0 +1,45 @@
+<section id="instalaciones" class="py-24 bg-gradient-to-tr from-fuchsia-400 to-gray-900">
+    <div class="container mx-auto px-6 text-center">
+
+        <h2 class="text-6xl text-purple-300 font-rock font-bold mb-12">
+            Instalaciones del Gimnasio
+        </h2>
+
+        <!-- BOTONES DE SCROLL -->
+        <div class="flex justify-between mb-6">
+            <button (click)="scrollLeft()" class="px-4 py-2 bg-black/60 hover:bg-black rounded-xl text-white">
+                ⬅
+            </button>
+
+            <button (click)="scrollRight()" class="px-4 py-2 bg-black/60 hover:bg-black rounded-xl text-white">
+                ➡
+            </button>
+        </div>
+
+        <!-- CARRUSEL -->
+        <div #carousel class="carousel-container">
+
+            @for (instalaciones of instalaciones; track instalaciones.clave_instalaciones) {
+
+                <div class="event-card">
+
+                    <!-- TITULO -->
+                    <h3 class="event-title">{{ instalaciones.titulo }}</h3>
+
+                    <!-- IMAGEN -->
+                    <img [src]="instalaciones.imagen" class="event-image">
+
+                    <!-- DESCRIPCION -->
+                    <p class="event-desc">{{ instalaciones.descripcion }}</p>
+
+                    <!-- SEDE -->
+                    <p class="event-sede">En la sucursal {{ instalaciones.sede }}</p>
+
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+</section>

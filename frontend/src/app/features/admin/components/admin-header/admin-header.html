@@ -9,8 +9,18 @@
             <a routerLink="registro" routerLinkActive="active-link" class="nav-link">Registro</a>
             <a routerLink="usuarios" routerLinkActive="active-link" class="nav-link">Usuarios</a>
             <a routerLink="pago" routerLinkActive="active-link" class="nav-link">Pagos</a>
+            <a routerLink="eventos" routerLinkActive="active-link" class="nav-link">Eventos</a>
+            <a routerLink="instalaciones" routerLinkActive="active-link" class="nav-link">Instalaciones</a>
+            <a routerLink="entrenamientos" routerLinkActive="active-link" class="nav-link">Entrenamientos</a>
             <a routerLink="personal" routerLinkActive="active-link" class="nav-link">Personal</a>
-            <a routerLink="bitacora" routerLinkActive="active-link" class="nav-link">Bitácora</a>
+            <a 
+                *ngIf="rol === 'superadmin'"
+                routerLink="bitacora" 
+                routerLinkActive="active-link" 
+                class="nav-link"
+            >
+                Bitácora
+            </a>
             <!-- SEDE -->
             <div class="flex items-center gap-2">
 
@@ -19,14 +29,15 @@
                     <div class="flex items-center gap-2 text-black">
                         <span class="font-semibold">Sede:</span>
 
-                        <select 
-                            [(ngModel)]="sede" 
-                            (change)="changeSede()"
-                            class="bg-transparent text-black   px-2 py-1 focus:outline-none"
-                        >
-                            <option value="Emiliano">Emiliano</option>
-                            <option value="Obrera">Obrera</option>
-                        </select>
+                    <select 
+                        [(ngModel)]="sede" 
+                        (change)="changeSede()"
+                        class="bg-transparent text-black px-2 py-1 focus:outline-none"
+                    >
+                        <option value="Emiliano">Emiliano</option>
+                        <option value="Obrera">Obrera</option>
+                    </select>
+
                     </div>
                 </ng-container>
 
