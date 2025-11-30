@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Login } from './components/login/login';
+import { Recover } from './components/recover/recover';
 import { Register } from './components/register/register';
 
 const routes: Routes = [
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: 'register', // Ruta: /auth/register
         component: Register
+    },    
+    {
+        path: 'recover', // Ruta: /auth/register
+        component: Recover
     },
     {
         path: '', // Si solo se navega a /auth, redirige a /auth/login

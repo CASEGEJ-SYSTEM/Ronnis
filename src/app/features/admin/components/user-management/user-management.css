@@ -3,7 +3,20 @@
 @layer base {
     * {}
 
-    .action-btn {
-        @apply p-2 rounded-md transition-colors hover:bg-white/10;
+    .sub-nav-btn {
+        @apply flex-1 sm:flex-none text-center bg-gray-800 text-gray-300 py-3 px-6 rounded-lg font-bold transition-colors hover:bg-gray-700;
     }
+
+    .active-sub-nav {
+        @apply bg-pink-500 text-black;
+    }
+    
+    .action-btn {
+        @apply p-2 rounded-md transition-colors hover:bg-black/40;
+    }
+    
+    .active-btn2s {
+        @apply bg-pink-500 text-black;
+    }
+
 }

@@ -1,48 +1,214 @@
-<div class="container mx-auto max-w-6xl bg-black/20 backdrop-blur-sm p-8 rounded-xl shadow-xl">
-    <div class="flex justify-end mb-4">
+<div class="container mx-auto">
+  <div class="flex justify-between items-center mb-6">
+
+    <!-- Título y fecha -->
+    <div>
+      <h1 class="font-atomic text-pink-600 text-6xl sm:text-7xl">Usuarios</h1>
+
+      <p class="text-gray-900 mt-4 text-2xl">
+        Hora: {{ fechaHoraActual() | date:'HH:mm:ss' }},
+        Fecha: {{ fechaHoraActual() | date:'fullDate':'':'es' }}
+      </p>
     </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm whitespace-nowrap">
-            <thead>
-                <tr class="border-b border-white/20">
-                    <th class="p-3">Clave</th>
-                    <th class="p-3">Nombre Completo</th>
-                    <th class="p-3">Vencimiento</th>
-                    <th class="p-3 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (user of usersData; track user.id) {
-                <tr class="border-b border-white/10 hover:bg-white/5">
-                    <td class="p-3">{{ user.key }}</td>
-                    <td class="p-3">
-                        <a [routerLink]="['/admin/usuarios', user.id, 'estadisticas']"
-                            class="hover:text-pink-400 hover:underline">
-                            {{ user.name }}
-                        </a>
-                    </td>
-                    <td class="p-3" [ngClass]="user.status === 'Vigente' ? 'text-green-400' : 'text-red-400'">{{
-                        user.status }}</td>
-                    <td class="p-3">
-                        <div class="flex justify-center space-x-2">
-                            <button (click)="showQrModal(user)" class="action-btn" title="QR">
-                                <i class="ph ph-qr-code"></i>
-                            </button>
-                            <a [routerLink]="['/admin/usuarios', user.id, 'editar']" class="action-btn" title="Editar">
-                                <i class="ph ph-pencil-simple-line"></i>
-                            </a>
-                            <button (click)="deleteUser(user)" class="action-btn text-red-500" title="Eliminar">
-                                <i class="ph ph-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+
+    <!-- Filtros -->
+    <div class="flex flex-col ml-5">
+      <h3 class="font-atomic text-pink-600 text-2xl mb-2">Filtrar por:</h3>
+
+      <div class="flex flex-wrap gap-2 sm:gap-4 items-center relative">
+
+        <!-- Botones -->
+        <button
+        class="sub-nav-btn"
+        [ngClass]="{ 'active-sub-nav': filtroStatus === '' }"
+        (click)="filtrar('')"
+        >
+        Todos
+        </button>
+
+        <button
+        class="sub-nav-btn"
+        [ngClass]="{ 'active-sub-nav': filtroStatus === 'activo' }"
+        (click)="filtrar('activo')"
+        >
+        Activos
+        </button>
+
+        <button
+        class="sub-nav-btn"
+        [ngClass]="{ 'active-sub-nav': filtroStatus === 'inactivo' }"
+        (click)="filtrar('inactivo')"
+        >
+        Inactivos
+        </button>
+
+        <button
+        class="sub-nav-btn"
+        [ngClass]="{ 'active-sub-nav': filtroStatus === 'pendiente' }"
+        (click)="filtrar('pendiente')"
+        >
+        Pendientes
+        </button>
+
+        <!-- Búsqueda -->
+        <div class="relative w-full sm:w-64">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke-width="1.5"
+               stroke="currentColor"
+               class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+          </svg>
+
+          <input
+            type="text"
+            [(ngModel)]="busqueda"
+            placeholder="Buscar usuario..."
+            class="w-full bg-[#C25FA8] to-[#2b103f] border-transparent font-bold py-2 pl-10 pr-4 rounded-lg text-white"
+            />
+        </div>
+
+      </div>
     </div>
+  </div>
 </div>
 
+
+<!-- TABLA -->
+<div class="container mx-auto bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-xl shadow-xl text-black">
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-sm whitespace-nowrap">
+      <thead>
+        <tr class="border-b border-white/20">
+          <th class="p-3">Clave</th>
+          <th class="p-3">Nombre Completo</th>
+          <th class="p-3">Status</th>
+          <th class="p-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (user of usersFiltrados; track user.clave_usuario) {
+
+
+        <tr class="border-b border-white/10 hover:bg-white/5">
+
+          <!-- Clave -->
+          <td class="p-3">{{ user.clave_usuario }}</td>
+
+          <!-- Nombre -->
+          <td class="p-3">
+            <a [routerLink]="['/admin/usuarios', user?.clave_usuario, 'estadisticas']"
+               class="hover:text-pink-400 hover:underline">
+              {{ user.nombres }} {{ user.apellidos }}
+            </a>
+          </td>
+
+          <!-- Status -->
+          <td class="p-3">
+            <span
+            [ngClass]="
+                user.status === 'activo'
+                ? 'bg-green-500 text-white px-2 py-1 rounded-full text-sm shadow'
+                : user.status === 'inactivo'
+                    ? 'bg-red-500 text-white px-2 py-1 rounded-full text-sm shadow'
+                    : 'bg-yellow-500 text-black px-2 py-1 rounded-full text-sm shadow'
+            "
+            >
+            {{ user.status || 'pendiente' }}
+            </span>
+
+          </td>
+
+          <!-- Acciones -->
+          <td class="p-3">
+            <div class="flex justify-center space-x-2">
+
+              <!-- WhatsApp -->
+              <a class="action-btn"
+                 [href]="'https://wa.me/52' + user.telefono + '?text=Hola%20' + user.nombres + '!%20Quisiera%20más%20información.'"
+                 target="_blank" title="WhatsApp">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                viewBox="0 0 512 512" fill="#25D366">
+                  <path d="M380.9 97.1C339-3.6 240.2-32 160.8 11.7A186.7 186.7 0 0 0 24 194.5c0 33.1 8.8 65.5 25.7 94L0 480l195.9-50.9c27.1 14.8 57.4 22.6 88.3 22.6h.1c113.1 0 204.6-91.5 204.6-204.6 0-54.6-21.3-106-58-144zM284.3 388c-24.1 0-47.7-6.3-68.3-18.2l-4.9-2.9-81.1 21.1 21.7-79.1-3.2-5a137.4 137.4 0 0 1-21.3-73.8c0-76.2 62-138.2 138.2-138.2 36.9 0 71.6 14.4 97.7 40.6s40.6 60.8 40.6 97.7c-.1 76.1-62.1 138.1-138.4 138.1zm78.6-104.3c-4.3-2.1-25.6-12.6-29.6-14.1-4-1.5-6.9-2.1-9.8 2.1-2.9 4.3-11.3 14.1-13.8 17-2.6 2.9-5.1 3.2-9.4 1.1-4.3-2.1-18.1-6.7-34.5-21.3-12.7-11.3-21.3-25.1-23.8-29.4s-.3-6.6 1.8-8.7c1.9-1.9 4.3-5.1 6.4-7.6 2.1-2.6 2.9-4.3 4.3-7.2 1.4-2.9.7-5.4-.4-7.6-1.1-2.1-9.8-23.7-13.5-32.4-3.6-8.7-7.3-7.5-9.8-7.6-2.6-.1-5.4-.1-8.3-.1-2.9 0-7.6 1.1-11.6 5.4-4 4.3-15.2 14.8-15.2 36.1s15.6 41.9 17.7 44.8c2.1 2.9 30.7 46.9 74.4 65.8 10.4 4.5 18.5 7.2 24.8 9.2 10.4 3.3 19.8 2.8 27.2 1.7 8.3-1.2 25.6-10.5 29.2-20.6 3.6-10.1 3.6-18.7 2.5-20.6-1-1.8-3.9-2.9-8.2-5z"/>
+                </svg>
+              </a>
+
+              <!-- Email -->
+              <a class="action-btn"
+                 [href]="'mailto:' + user.email + '?subject=Consulta&body=Hola%20' + user.nombres + ',%20quisiera%20más%20información.'"
+                 title="Correo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                       class="lucide lucide-mail">
+                  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                </svg>
+              </a>
+
+              <!-- QR -->
+              <button class="action-btn" (click)="showQrModal(user)" title="QR">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="5" height="5" x="3" y="3" rx="1"/>
+                  <rect width="5" height="5" x="16" y="3" rx="1"/>
+                  <rect width="5" height="5" x="3" y="16" rx="1"/>
+                  <path d="M21 16h-3a2 2 0 0 0-2 2v3" /> 
+                  <path d="M21 21v.01" />
+                  <path d="M12 7v3a2 2 0 0 1-2 2H7" />
+                  <path d="M3 12h.01" /> 
+                  <path d="M12 3h.01" /> 
+                  <path d="M12 16h.01" /> 
+                  <path d="M16 12h.01" /> 
+                  <path d="M21 12h.01" />
+                </svg>
+              </button>
+
+              <!-- Editar -->
+              <a [routerLink]="['/admin/usuarios', user.clave_usuario, 'editar']"
+                 class="action-btn" title="Editar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+                  stroke-linecap="round" stroke-linejoin="round"> 
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  <path d="m15 5 4 4"/>
+                </svg>
+              </a>
+
+              <!-- Eliminar -->
+              <button class="action-btn text-red-500"
+                      (click)="deleteUser(user)" title="Eliminar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+                stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18" /> 
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /> 
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /> 
+                  <line x1="10" x2="10" y1="11" y2="17" /> 
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
+              </button>
+
+            </div>
+          </td>
+        </tr>
+
+        }
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
 @if (selectedUserForQr()) {
-<app-qr-code-modal [user]="selectedUserForQr()" (close)="closeQrModal()"></app-qr-code-modal>
+  <app-qr-code-modal
+    [user]="selectedUserForQr()"
+    (close)="closeQrModal()"></app-qr-code-modal>
 }

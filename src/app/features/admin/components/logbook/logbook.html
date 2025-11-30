@@ -1,15 +1,44 @@
-<div class="text-gray-900 container mx-auto">
-    <h1 class="font-atomic text-pink-600 text-6xl sm:text-7xl mb-6">Bitácora</h1>
+<div class="mx-6 flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+  <div>
+    <h1 class="font-atomic text-pink-600 text-6xl sm:text-7xl mb-2">Bitácora</h1>
+    <p class="text-gray-900 mt-2 text-2xl">
+      Hora: {{ fechaHoraActual() | date:'HH:mm:ss' }},
+      Fecha: {{ fechaHoraActual() | date:'fullDate':'':'es' }}
+    </p>
+  </div>
 
-    <nav class="flex flex-wrap self-center justify-center gap-2 sm:gap-4 mb-8 max-w-fit p-2 bg-black/20 backdrop-blur-sm rounded-lg">
-        <button (click)="setSubView('ganancias')" [ngClass]="{'active-sub-nav': currentSubView() === 'ganancias'}"
-            class="sub-nav-btn">Ganancias</button>
-        <button (click)="setSubView('deudores')" [ngClass]="{'active-sub-nav': currentSubView() === 'deudores'}"
-            class="sub-nav-btn">Deudores</button>
-        <button (click)="setSubView('asistencia')" [ngClass]="{'active-sub-nav': currentSubView() === 'asistencia'}"
-            class="sub-nav-btn">Asistencia</button>
-    </nav>
+  <div class="relative w-full sm:w-64 mt-4 sm:mt-0">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         fill="none"
+         viewBox="0 0 24 24"
+         stroke-width="1.5"
+         stroke="currentColor"
+         class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+    </svg>
 
+    <input type="text"
+           placeholder="Buscar..."
+           class="w-full bg-fuchsia-600 hover:bg-fuchsia-500 font-bold py-2 pl-10 pr-4 rounded-lg text-white"/>
+  </div>
+</div>
+
+<!-- Navegación debajo del h1 + buscador -->
+<nav class="flex flex-wrap self-start justify-start gap-2 sm:gap-4 mb-8 max-w-fit p-2 bg-black/20 backdrop-blur-sm rounded-lg">
+    <button (click)="setSubView('ganancias')" [ngClass]="{'active-sub-nav': currentSubView() === 'ganancias'}"
+        class="sub-nav-btn">Ganancias</button>
+    <button (click)="setSubView('deudores')" [ngClass]="{'active-sub-nav': currentSubView() === 'deudores'}"
+        class="sub-nav-btn">Deudores</button>
+    <button (click)="setSubView('asistencia')" [ngClass]="{'active-sub-nav': currentSubView() === 'asistencia'}"
+        class="sub-nav-btn">Asistencia</button>
+    <button (click)="setSubView('renovacion')" [ngClass]="{'active-sub-nav': currentSubView() === 'renovacion'}"
+        class="sub-nav-btn">Renovación de cuenta</button>
+</nav>
+<nav class="flex flex-wrap self-start justify-start gap-2 sm:gap-4 mb-8 max-w-fit p-2 bg-black/20 backdrop-blur-sm rounded-lg">
+    <button class="sub-nav-btn">Semanales</button>
+    <button class="sub-nav-btn">Mensuales</button>
+</nav>
     @switch (currentSubView()) {
     @case ('ganancias') {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -61,4 +90,3 @@
     </div>
     }
     }
-</div>

@@ -1,0 +1,43 @@
+.carousel-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none; /* Oculta barra en Chrome */
+}
+
+.trainer-card {
+    min-width: 300px;        
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    transition: 0.3s;
+}
+
+.trainer-card:hover {
+    background: rgba(0,0,0,0.7);
+}
+
+.trainer-image {
+    width: 100%;
+    height: 300px;
+    
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.trainer-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.trainer-desc {
+    color: #bbb;
+}

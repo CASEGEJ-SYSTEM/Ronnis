@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@layer base {
+    * {}
+
+    .nav-link {
+        @apply  rounded-lg text-gray-600 transition-colors hover:text-black;
+    }
+
+    .active-link {
+        @apply  font-bold underline text-black;
+    }
+}

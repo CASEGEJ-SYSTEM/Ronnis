@@ -1,0 +1,65 @@
+<div class="container mx-auto">
+    <h1 class="font-atomic text-pink-600 text-7xl mb-12 text-center">Instalaciones</h1>
+    <div class="flex justify-between items-center mb-6">
+    </div>
+
+    <!-- CONTENEDOR DEL CARRUSEL -->
+    <div class="relative">
+
+        <!-- Botón IZQUIERDA -->
+        <button 
+          (click)="scrollLeft()"
+          class="absolute left-0 top-1/2 -translate-y-1/2 bg-black/60 text-white 
+                 p-3 rounded-full shadow-lg z-10 hover:bg-black">
+            ◀
+        </button>
+
+        <!-- LISTA HORIZONTAL -->
+        <div 
+            #carousel
+            class="flex gap-8 overflow-x-auto scroll-smooth px-12 py-4 no-scrollbar">
+
+            @for (instalaciones of instalacionesData; track instalaciones.clave_instalaciones) {
+            <div class="min-w-[420px] w-[420px] bg-black/20 backdrop-blur-sm p-6 rounded-2xl shadow-lg 
+                        flex-shrink-0 group hover:bg-purple-300/80 transition">
+
+                <img [src]="instalaciones.image" class="w-full h-60 object-cover rounded-lg mb-4">
+
+                <h3 class="text-xl text-black font-bold mb-1">{{ instalaciones.titulo }}</h3>
+
+                <p class="text-gray-700 text-sm mb-4">{{ instalaciones.description }}</p>
+
+                <div class="flex space-x-2">
+                <button  
+                    [routerLink]="['/admin/instalaciones', instalaciones.clave_instalaciones, 'editar']"
+                    class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg">
+                    Editar
+                </button>
+
+
+
+                    <button (click)="eliminar(instalaciones.clave_instalaciones)"
+                        class="bg-gray-700 hover:bg-gray-800 text-white font-bold p-2 rounded-lg">
+                        <i class="ph ph-trash text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Botón DERECHA -->
+        <button 
+          (click)="scrollRight()"
+          class="absolute right-0 top-1/2 -translate-y-1/2 bg-black/60 text-white 
+                 p-3 rounded-full shadow-lg z-10 hover:bg-black">
+            ▶
+        </button>
+    </div>
+
+    <div class="flex justify-center mt-12">
+        <button [routerLink]="['/admin/instalaciones/nuevo']"
+            class="bg-gray-900 hover:bg-black text-white font-bold py-3 px-12 rounded-full text-lg">
+            Agregar
+        </button>
+    </div>
+</div>

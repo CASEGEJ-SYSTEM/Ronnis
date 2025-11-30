@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { AdminRoutingModule } from "../../../features/admin/admin-routing.module";
 
 @Component({
     selector: 'app-header',
-    imports: [AdminRoutingModule],
+    imports: [],
     templateUrl: './header.html',
     styleUrl: './header.css'
 })

@@ -1,17 +1,62 @@
 <header class="bg-fuchsia-300 shadow-md p-2">
     <div class="container mx-auto flex justify-between items-center">
+
         <a routerLink="" class="mr-auto text-2xl font-bold flex items-center gap-2">
             <img src="images/factor_fit-25.webp" alt="Ronnis Gym Logo" class="w-8 h-8">
         </a>
+
         <nav class="flex items-center space-x-2 sm:space-x-6 text-sm sm:text-lg">
             <a routerLink="registro" routerLinkActive="active-link" class="nav-link">Registro</a>
             <a routerLink="usuarios" routerLinkActive="active-link" class="nav-link">Usuarios</a>
+            <a routerLink="pago" routerLinkActive="active-link" class="nav-link">Pagos</a>
+            <a routerLink="eventos" routerLinkActive="active-link" class="nav-link">Eventos</a>
+            <a routerLink="instalaciones" routerLinkActive="active-link" class="nav-link">Instalaciones</a>
+            <a routerLink="entrenamientos" routerLinkActive="active-link" class="nav-link">Entrenamientos</a>
             <a routerLink="personal" routerLinkActive="active-link" class="nav-link">Personal</a>
-            <a routerLink="precios" routerLinkActive="active-link" class="nav-link">Precios</a>
-            <a routerLink="bitacora" routerLinkActive="active-link" class="nav-link">Bitácora</a>
+            <a 
+                *ngIf="rol === 'superadmin'"
+                routerLink="bitacora" 
+                routerLinkActive="active-link" 
+                class="nav-link"
+            >
+                Bitácora
+            </a>
+            <!-- SEDE -->
+            <div class="flex items-center gap-2">
+
+                <!-- SI ES SUPERADMIN → SELECT -->
+                <ng-container *ngIf="rol === 'superadmin'; else sedeFija">
+                    <div class="flex items-center gap-2 text-black">
+                        <span class="font-semibold">Sede:</span>
+
+                    <select 
+                        [(ngModel)]="sede" 
+                        (change)="changeSede()"
+                        class="bg-transparent text-black px-2 py-1 focus:outline-none"
+                    >
+                        <option value="Emiliano">Emiliano</option>
+                        <option value="Obrera">Obrera</option>
+                    </select>
+
+                    </div>
+                </ng-container>
+
+                <!-- SI ES ADMIN NORMAL → MOSTRAR TEXTO -->
+                <ng-template #sedeFija>
+                    <span class="font-semibold text-black" >
+                        Sede: {{ sede }}
+                    </span>
+                </ng-template>
+
+            </div>
         </nav>
-        <button (click)="logout()" class="ml-auto bg-purple-500 hover:bg-purple-600 text-white font-bold py-1.5 px-3 rounded-4xl">
+
+        <button 
+            (click)="logout()" 
+            class="ml-auto bg-purple-500 hover:bg-purple-600 text-white font-bold py-1.5 px-3 rounded-4xl"
+        >
             Salir
         </button>
+
     </div>
 </header>

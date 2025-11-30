@@ -6,9 +6,14 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminLayout } from './components/admin-layout/admin-layout';
 import { ClientRegistration } from './components/client-registration/client-registration';
 import { UserManagement } from './components/user-management/user-management';
+import { UserPay } from './components/user-pay/user-pay';
+import { Events } from './components/events/events';
+import { Instalaciones } from './components/instalaciones/instalaciones';
+import { UserPayDetail } from './components/user-pay-detail/user-pay-detail';
 import { TrainerManagement } from './components/trainer-management/trainer-management';
 import { PriceManagement } from './components/price-management/price-management';
 import { Logbook } from './components/logbook/logbook';
+import { TrainerEdit } from './components/trainer-edit/trainer-edit';
 
 @NgModule({
     declarations: [],
@@ -18,7 +23,12 @@ import { Logbook } from './components/logbook/logbook';
         AdminLayout,
         ClientRegistration,
         UserManagement,
+        Events,
+        Instalaciones,
         TrainerManagement,
+        TrainerEdit,
+        UserPay,
+        UserPayDetail,
         PriceManagement,
         Logbook
     ]

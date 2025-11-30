@@ -1,4 +1,4 @@
-<div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/20 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+<div class="container mx-auto max-w-6xl grid lg:grid-cols-2 gap-12 items-center bg-black/10 shadow-purple-600 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
     <div class="text-center">
         <h1 class="font-atomic text-pink-600 text-7xl mb-8">Registro</h1>
         <div class="flex justify-center">
@@ -8,41 +8,53 @@
         </div>
     </div>
     <div class="p-2 rounded-2xl">
-        <form class="space-y-4">
+        <form class="space-y-4" (ngSubmit)="registrarusuario()" #form="ngForm">
             <div class="grid md:grid-cols-2 gap-4">
                 <div>
-                    <label for="nombre" class="text-black font-medium">Nombre</label>
-                    <input type="text" id="nombre" placeholder="Andrea" class="input-field">
+                <label for="nombre" class="text-black font-medium">Nombre</label>
+                <input type="text" id="nombre" placeholder="Andrea" [(ngModel)]="usuario.nombres" name="nombres" required class="input-field">
                 </div>
                 <div>
-                    <label for="apellido-paterno" class="text-black font-medium">Apellido paterno</label>
-                    <input type="text" id="apellido-paterno" placeholder="Báez" class="input-field">
+                <label for="apellidos" class="text-black font-medium">Apellidos</label>
+                <input type="text" id="apellidos" placeholder="Báez" [(ngModel)]="usuario.apellidos" name="apellidos" required class="input-field">
                 </div>
                 <div>
-                    <label for="apellido-materno" class="text-black font-medium">Apellido materno</label>
-                    <input type="text" id="apellido-materno" placeholder="Castillo" class="input-field">
+                <label class="text-black font-medium">Fecha de Nacimiento</label>
+                <input type="date" [(ngModel)]="usuario.fecha_nacimiento" name="fecha_nacimiento" required max="{{ today }}" class="input-field">
                 </div>
                 <div>
-                    <label for="numero" class="text-black font-medium">Número de teléfono</label>
-                    <input type="tel" id="numero" placeholder="+52 ··· ···· ···" class="input-field">
+                <label for="numero" class="text-black font-medium">Número de teléfono</label>
+                <input type="tel" id="numero" placeholder="+52 ··· ···· ···" [(ngModel)]="usuario.telefono" name="telefono" required class="input-field">
                 </div>
+            </div>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label for="peso_inicial" class="text-black font-medium">Peso Inicial</label>
+                <input type="text" id="peso_inicial" placeholder="86 Kg" [(ngModel)]="usuario.peso_inicial"  name="peso_inicial" required class="input-field">
             </div>
             <div>
                 <label for="email" class="text-black font-medium">Correo electrónico</label>
-                <input type="email" id="email" placeholder="abc@gmail.com" class="input-field w-full">
+                <input type="email" id="email" placeholder="abc@gmail.com" [(ngModel)]="usuario.email" name="email" required class="input-field w-full">
             </div>
+        </div>
             <div class="grid md:grid-cols-2 gap-4">
                 <div>
-                    <label for="pass" class="text-black font-medium">Contraseña</label>
-                    <input type="password" id="pass" placeholder="* * * * * * * *" class="input-field">
+                    <label class="text-black font-medium">Fecha de Inscripción</label>
+                    <input type="date" [(ngModel)]="usuario.fecha_inscripcion" name="fecha_inscripcion" class="input-field" readonly>
                 </div>
                 <div>
-                    <label for="meses" class="text-black font-medium">Meses pagados</label>
-                    <input type="text" id="meses" placeholder="· · · · ·" class="input-field">
+                    <label class="text-black font-medium">Fecha de Corte</label>
+                    <input type="text"  [value]="fechaCorteDia"  class="input-field"  readonly>
+
+
                 </div>
             </div>
+
             <button type="submit"
-                class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">Registrar</button>
+                    class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">
+                Registrar
+            </button>
         </form>
+
     </div>
 </div>
