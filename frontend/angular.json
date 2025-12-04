@@ -21,14 +21,14 @@
                         "assets": [
                             {
                                 "glob": "**/*",
-                                "input": "public"
+                                "input": "public",
+                                 "output": "/home"
                             }
                         ],
                         "styles": [
                           "src/styles.css"
                         ],
                         "server": "src/main.server.ts",
-                        "outputMode": "server",
                         "ssr": {
                             "entry": "src/server.ts"
                         }
@@ -98,3 +98,21 @@
         "analytics": false
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

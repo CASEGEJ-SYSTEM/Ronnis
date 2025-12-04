@@ -79,13 +79,15 @@ class EntrenamientosController extends Controller
 
         if ($request->hasFile('ruta_imagen')) {
 
+            // Eliminar imagen anterior si existe
             if ($entrenamientos->ruta_imagen) {
-                $ruta = public_path($entrenamientos->ruta_imagen);
-                if (file_exists($ruta)) {
-                    unlink($ruta);
+                $rutaAnterior = str_replace('storage', storage_path('app/public'), $entrenamientos->ruta_imagen);
+                if (file_exists($rutaAnterior)) {
+                    unlink($rutaAnterior);
                 }
             }
 
+            // Subir nueva imagen
             $rutaNueva = $request->file('ruta_imagen')->store('entrenamientos', 'public');
             $entrenamientos->ruta_imagen = 'storage/' . $rutaNueva;
         }

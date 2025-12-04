@@ -80,13 +80,17 @@ class EventosController extends Controller
 
         if ($request->hasFile('ruta_imagen')) {
 
+            // Eliminar imagen anterior si existe
             if ($eventos->ruta_imagen) {
-                $ruta = public_path($eventos->ruta_imagen);
-                if (file_exists($ruta)) {
-                    unlink($ruta);
+                // Convierte "storage/eventos/archivo.jpg" a "storage/app/public/eventos/archivo.jpg"
+                $rutaAnterior = str_replace('storage', storage_path('app/public'), $eventos->ruta_imagen);
+
+                if (file_exists($rutaAnterior)) {
+                    unlink($rutaAnterior);
                 }
             }
 
+            // Subir nueva imagen
             $rutaNueva = $request->file('ruta_imagen')->store('eventos', 'public');
             $eventos->ruta_imagen = 'storage/' . $rutaNueva;
         }

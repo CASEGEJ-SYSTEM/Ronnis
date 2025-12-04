@@ -79,13 +79,15 @@ class InstalacionesController extends Controller
 
         if ($request->hasFile('ruta_imagen')) {
 
+            // Eliminar imagen anterior si existe
             if ($instalaciones->ruta_imagen) {
-                $ruta = public_path($instalaciones->ruta_imagen);
-                if (file_exists($ruta)) {
-                    unlink($ruta);
+                $rutaAnterior = str_replace('storage', storage_path('app/public'), $instalaciones->ruta_imagen);
+                if (file_exists($rutaAnterior)) {
+                    unlink($rutaAnterior);
                 }
             }
 
+            // Subir nueva imagen
             $rutaNueva = $request->file('ruta_imagen')->store('instalaciones', 'public');
             $instalaciones->ruta_imagen = 'storage/' . $rutaNueva;
         }

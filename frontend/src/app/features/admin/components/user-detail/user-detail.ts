@@ -202,11 +202,7 @@ export class UserDetail implements OnInit {
       this.actualizarUsuario(usuarioActualizado);
   }
 
-
-
-
-
-
+  
     actualizarUsuario(usuarioActualizado: any) {
       this.usuarioService.actualizarUsuario(this.clave_usuario, usuarioActualizado)
         .subscribe({

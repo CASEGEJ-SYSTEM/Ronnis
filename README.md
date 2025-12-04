@@ -37,6 +37,7 @@ cd backend
 ```
 ## Instalar dependencias PHP con Composer
 ```
+RUN php artisan storage:link || true
 composer install
 ```
 ### Poner en la terminar una ves adentro de la caperta migraciones de las tablas y datos

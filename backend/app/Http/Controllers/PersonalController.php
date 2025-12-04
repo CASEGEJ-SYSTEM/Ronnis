@@ -84,18 +84,20 @@ class PersonalController extends Controller
 
         if ($request->hasFile('ruta_imagen')) {
 
-            if ($personal->ruta_imagen) {
-                $ruta = public_path($personal->ruta_imagen);
-                if (file_exists($ruta)) {
-                    unlink($ruta);
-                }
-            }
+        // Eliminar imagen anterior si existe
+        if ($personal->ruta_imagen) {
+            // Convierte "storage/personal/archivo.jpg" a "storage/app/public/personal/archivo.jpg"
+            $rutaAnterior = str_replace('storage', storage_path('app/public'), $personal->ruta_imagen);
 
-            $rutaNueva = $request->file('ruta_imagen')->store('personal', 'public');
-            $personal->ruta_imagen = 'storage/' . $rutaNueva;
+            if (file_exists($rutaAnterior)) {
+                unlink($rutaAnterior);
+            }
         }
 
-
+        // Subir nueva imagen
+        $rutaNueva = $request->file('ruta_imagen')->store('personal', 'public');
+        $personal->ruta_imagen = 'storage/' . $rutaNueva;
+        }
         $personal->save();
 
         return response()->json(['message' => 'Personal actualizado correctamente']);

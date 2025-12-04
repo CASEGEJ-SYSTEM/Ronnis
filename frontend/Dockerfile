@@ -1,16 +1,24 @@
-FROM node:20
-
+# Etapa 1: Build de Angular
+FROM node:20 AS build
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
 COPY . .
+RUN npm run build --prod
 
-# Compilar Angular
-RUN npm run build
+# Etapa 2: Servir con Nginx
+FROM nginx:alpine
 
-# Servir con un servidor ligero
-RUN npm install -g http-server
+# Copiamos Angular
+COPY --from=build /app/dist/ronnis-gym/browser /usr/share/nginx/html
 
-CMD ["http-server", "dist", "-p", "4200", "-a", "0.0.0.0"]
+# Renombrar index.csr.html a index.html
+RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
+
+# Configuración de Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
