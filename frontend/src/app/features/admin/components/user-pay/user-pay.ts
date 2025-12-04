@@ -34,7 +34,7 @@ export class UserPay  implements OnInit {
 
   constructor(private usuarioService: UsuarioService) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.cargarUsuarios();
 
     // actualizar fecha y hora cada segundo
@@ -126,11 +126,14 @@ cargarPagos() {
   get usersFiltrados() {
     return this.usersData.filter(user => {
 
+     // Excluir usuarios con status 'pendiente'
+      if (user.status === 'eliminado' || user.status === 'sin asignar' ) return false;
+
       // FILTRO POR STATUS
       const pasaStatus =
         !this.filtroStatus ||
         (this.filtroStatus === 'pendiente'
-          ? !user.status || user.status === '' || user.status === 'ninguno' || user.status === 'pendiente'
+          ? !user.status || user.status === '' || user.status === 'ninguno' || user.status === 'pendiente' || user.status === 'proximo a vencer' 
           : user.status === this.filtroStatus);
 
 

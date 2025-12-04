@@ -60,6 +60,11 @@ export class UsuarioService {
     return this.http.put(`${this.apiUrl}/${clave_usuario}/eliminar`, {});
   }
 
+  getQrUrl(path: string) {
+    return `${environment.apiUrl}/${path}`;
+  }
+
+  
 
   // =====================================
   //               Pagos
@@ -87,6 +92,12 @@ export class UsuarioService {
 
   subirFoto(clave: string, formData: FormData) {
     return this.http.post(`${this.apiUrl}/${clave}/subir-foto`, formData);
+  }
+
+  getBitacoraIngresos() {
+    return this.http.get<{ status: boolean; data: any[] }>(
+      `${environment.apiUrl}/api/pagos/bitacora`
+    );
   }
 
 

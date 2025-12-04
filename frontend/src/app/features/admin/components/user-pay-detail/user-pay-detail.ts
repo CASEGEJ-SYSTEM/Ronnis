@@ -73,38 +73,33 @@ export class UserPayDetail implements OnInit {
     }
   }
 
-  // -------- NUEVA LÓGICA CORREGIDA --------
   calcularProximoCorte() {
-    if (!this.pago.fecha_corte) return;
+      if (!this.pago.fecha_corte) return;
 
-    const fecha = new Date(this.pago.fecha_corte);
+      const fechaCorte = new Date(this.pago.fecha_corte);
+      const monto = this.pago.monto_pagado ?? 0;
 
-    // Detectar si es usuario nuevo
-    if (this.pago.monto_pagado_original === undefined) {
-      this.pago.monto_pagado_original = this.pago.monto_pagado;
-    }
+      // Si no ha pagado nada → no mover fecha
+      if (monto === 0) {
+          this.pago.proximo_corte = fechaCorte;
+          return;
+      }
 
-    const esNuevo = this.pago.monto_pagado_original === 0;
+      // Calcular cuántos meses avanza según el monto pagado
+      const meses = Math.floor(monto / 500);
 
-    // ✔ Usuario nuevo pagando EXACTAMENTE 500 → no mover fecha
-    if (esNuevo && this.pago.monto_pagado === 500) {
-      this.pago.proximo_corte = fecha;
-      return;
-    }
+      // Crear nueva fecha respetando el día de corte
+      const nuevaFecha = new Date(fechaCorte);
+      const diaOriginal = fechaCorte.getDate(); // Guardamos el día original
+      nuevaFecha.setMonth(nuevaFecha.getMonth() + meses);
 
-    // ✔ Si no ha pagado nada todavía
-    if (this.pago.monto_pagado === 0) {
-      this.pago.proximo_corte = fecha;
-      return;
-    }
+      // Ajustamos el día al original
+      nuevaFecha.setDate(diaOriginal);
 
-    // ✔ Calcular meses según el monto pagado
-    const meses = Math.floor(this.pago.monto_pagado / 500);
-    const nuevaFecha = new Date(fecha);
-    nuevaFecha.setMonth(nuevaFecha.getMonth() + meses);
-
-    this.pago.proximo_corte = nuevaFecha;
+      this.pago.proximo_corte = nuevaFecha;
   }
+
+
 
   // -------- AL EDITAR MONTO --------
   onMontoPagadoChange(value: any) {
@@ -119,6 +114,8 @@ export class UserPayDetail implements OnInit {
   }
 
   // -------- GUARDAR --------
+  mensaje: string = '';
+
   guardarCambios() {
     const payload = {
       monto_pagado: this.pago.monto_pagado,
@@ -127,12 +124,14 @@ export class UserPayDetail implements OnInit {
     };
 
     this.usuarioService.actualizarPago(this.clave_usuario, payload).subscribe({
-      next: () => {
-        alert("Pago actualizado");
+      next: (res: any) => {
+        this.mensaje = res.message; 
+        setTimeout(() => this.mensaje = '', 3000); 
         this.cargarPago(this.clave_usuario);
       }
     });
   }
+
 
   // -------- BÚSQUEDA --------
   buscar() {

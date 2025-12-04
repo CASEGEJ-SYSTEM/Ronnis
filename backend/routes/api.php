@@ -29,11 +29,31 @@ Route::put('/usuarios/{clave}/eliminar', [UsuarioController::class, 'eliminarUsu
 Route::get('/usuarios/buscar/general/{texto}', [UsuarioController::class, 'buscarUsuarios']);
 Route::get('/usuarios/buscar/sede', [UsuarioController::class, 'buscarUsuariosPorSede']);
 Route::post('/usuarios/{clave}/subir-foto', [UsuarioController::class, 'subirFoto']);
+Route::get('/storage/{folder}/{filename}', [FileController::class, 'show']);
 
 Route::post('/login', [UsuarioController::class, 'login']);
+Route::get('/qr/{filename}', function ($filename) {
+    $path = storage_path("app/public/qr/$filename");
+
+    if (!File::exists($path)) {
+        return response('Archivo no encontrado', 404)
+               ->header("Access-Control-Allow-Origin", "http://localhost:4200");
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    return response($file, 200)
+           ->header("Content-Type", $type)
+           ->header("Access-Control-Allow-Origin", "http://localhost:4200");
+});
+
+Route::get('/pagos/actualizar', [PagoController::class, 'actualizarPagos']);
 
 // ---------- PAGOS ----------
+// ---------- PAGOS ----------
 Route::get('/pagos', [PagoController::class, 'index']);
+Route::get('/pagos/bitacora', [PagoController::class, 'bitacora']);
 Route::get('/pagos/{clave_cliente}', [PagoController::class, 'show']);
 Route::post('/pagos', [PagoController::class, 'store']);
 Route::put('/pagos/{clave_cliente}', [PagoController::class, 'update']);

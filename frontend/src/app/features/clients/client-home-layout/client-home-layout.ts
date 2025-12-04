@@ -3,10 +3,10 @@ import { RouterOutlet } from '@angular/router';
 import { ClientsHeader } from '../clients-header/clients-header';
 
 @Component({
-    selector: 'app-clients-layout',
+    selector: 'app-client-home-layout',
     standalone: true,
     imports: [RouterOutlet, ClientsHeader],
-    templateUrl: './clients-layout.html',
-    styleUrl: './clients-layout.css',
+    templateUrl: './client-home-layout.html',
+    styleUrl: './client-home-layout.css',
 })
-export class ClientsLayout {  }
+export class ClientHomeLayout {  }

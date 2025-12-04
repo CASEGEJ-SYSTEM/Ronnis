@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pago;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Usuario;
 
 class PagoController extends Controller
 {
@@ -54,13 +56,115 @@ class PagoController extends Controller
         $pago = Pago::where('clave_cliente', $id)->first();
         if (!$pago) return response()->json(['message' => 'Pago no encontrado'], 404);
 
-        $pago->update($request->all());
-        return response()->json(['message' => 'Pago actualizado', 'pago' => $pago]);
-    }
+        // Solo actualiza los campos permitidos
+        $pago->update($request->only([
+            'fecha_ingreso',
+            'fecha_corte',
+            'Tipo_pago',
+            'monto_pagado',
+            'monto_pendiente',
+            'monto_recargo'
+        ]));
 
+        // Retornar un mensaje limpio, sin URLs completas
+        return response()->json([
+            'message' => 'Pago actualizado correctamente',
+            'pago' => [
+                'clave_cliente' => $pago->clave_cliente,
+                'monto_pagado' => $pago->monto_pagado,
+                'monto_pendiente' => $pago->monto_pendiente,
+                'fecha_corte' => $pago->fecha_corte
+            ]
+        ]);
+    }
     public function destroy($id)
     {
         Pago::where('clave_cliente', $id)->delete();
         return response()->json(['message' => 'Registro(s) de pago eliminado(s)']);
     }
+
+
+    public function actualizarEstadosYRecargos()
+    {
+        $hoy = Carbon::now();
+        $pagos = Pago::with('usuario')->get();
+
+        foreach ($pagos as $pago) {
+            $usuario = $pago->usuario;
+            if (!$usuario || !$pago->fecha_corte) continue;
+            if ($usuario->status === 'eliminado') continue;
+
+            $fechaCorte = Carbon::parse($pago->fecha_corte);
+            $diasDiff = $hoy->diffInDays($fechaCorte, false); // positivo si falta
+
+            // Inactivo y aplicar recargo si pasó más de 3 días
+            if ($diasDiff < -3) {
+                $usuario->status = 'inactivo';
+                $semanasRetraso = ceil(abs($diasDiff) / 7);
+                $montoBase = 500;
+                $pago->monto_pendiente = $montoBase + ($semanasRetraso * 100);
+                $pago->save();
+            }
+            // Pendiente hasta 3 días después
+            elseif ($diasDiff < 0 && $diasDiff >= -3) {
+                $usuario->status = 'pendiente';
+            }
+            // Próximo a vencer 5 días antes hasta el día de corte
+            elseif ($diasDiff <= 5 && $diasDiff >= 0) {
+                $usuario->status = 'proximo a vencer';
+            }
+            // Ya pagó → activo
+            elseif ($pago->monto_pagado >= ($pago->monto_pendiente ?? 0)) {
+                $usuario->status = 'activo';
+                $pago->monto_pendiente = $pago->monto_pendiente ?? 500; // base si quieres
+            }
+            // Fecha futura, sin pago aún
+            else {
+                $usuario->status = 'activo';
+            }
+
+            $usuario->save();
+        }
+
+        return true;
+    }
+
+
+    
+    public function actualizarPagos()
+    {
+        $this->actualizarEstadosYRecargos();
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Pagos actualizados correctamente'
+        ]);
+    }
+
+
+    public function bitacora()
+    {
+        $pagos = Pago::with('usuario')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function($pago) {
+                return [
+                    'clave'     => $pago->clave_cliente,
+                    'nombre'    => $pago->usuario->nombres ?? 'Sin nombre',
+                    'apellido'  => $pago->usuario->apellidos ?? '',
+                    'tipo_pago' => $pago->Tipo_pago,
+                    'monto'     => $pago->monto_pagado,
+                    'fecha_corte'  => $pago->fecha_corte,
+                    'monto_recargo'  => $pago->monto_recargo,
+                    'telefono'  => $pago->usuario->telefono,
+                    'email'  => $pago->usuario->email,
+                ];
+            });
+
+        return response()->json([
+            'status' => true,
+            'data' => $pagos
+        ]);
+    }
+    
 }

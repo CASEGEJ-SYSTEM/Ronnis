@@ -1,0 +1,19 @@
+<header class=" bg-fuchsia-300 shadow-md p-4">
+    <div class="container mx-auto flex justify-between items-center">
+
+        <a routerLink="" class="mr-auto text-2xl font-bold flex items-center gap-2">
+            <img src="images/factor_fit-25.webp" alt="Ronnis Gym Logo" class="w-8 h-8 rounded-full hover:scale-160">
+        </a>
+
+        <div class="flex gap-5">
+        <nav class="hidden md:flex items-center space-x-7 text-black font-semibold italic justify-center">
+             <a [routerLink]="['/cliente', claveUsuario, 'home']">Home</a>
+                <a [routerLink]="['/cliente', claveUsuario, 'perfil']">Perfil</a>
+            </nav>
+            <button (click)="logout()" class="ml-auto bg-purple-500 hover:bg-purple-600 text-white font-bold py-1.5 px-3 rounded-4xl">
+                Salir
+            </button>
+        </div>
+
+    </div>
+</header>

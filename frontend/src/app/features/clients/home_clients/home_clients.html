@@ -1,0 +1,33 @@
+<section 
+    class="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-fixed"
+    [ngStyle]="{'background-image': 'url(https://i.ibb.co/WpN9R0hx/image.png)'}">
+
+    <!-- Capa oscura -->
+    <div class="absolute inset-0 bg-black/60"></div>
+
+    <!-- CONTENIDO -->
+    <div class="relative z-10 w-full flex items-center justify-between px-20">
+
+        <!-- INFORMACIÓN DEL USUARIO -->
+        <div class="flex flex-col">
+            <h1 class="text-6xl text-center font-extrabold text-white drop-shadow-xl">
+                {{ user?.nombres }} {{ user?.apellidos }}
+            </h1>
+
+            <p 
+                class="text-5xl text-center font-semibold mt-4"
+                [ngClass]="pago ? 'text-blue-400' : 'text-red-400'">
+                {{ pago ? 'Vigente' : 'Vencido' }}
+            </p>
+        </div>
+
+        <!-- QR MÁS GRANDE Y MÁS A LA IZQUIERDA -->
+        <div class="bg-black/90 p-14 rounded-3xl shadow-2xl mr-10">
+            <img 
+                [src]="user?.qr_imagen"
+                alt="QR"
+                class="w-[28rem] h-[28rem] opacity-90">
+        </div>
+
+    </div>
+</section>

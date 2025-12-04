@@ -4,11 +4,11 @@
     * {}
 
     .info-label {
-        @apply block text-sm font-bold text-gray-300 mb-1;
+        @apply block text-sm font-bold text-black mb-1;
     }
 
     .info-field {
-        @apply w-full bg-white/10 border border-transparent rounded-lg p-3 text-white;
+        @apply w-full bg-white/10 border border-transparent rounded-lg p-3 text-black;
     }
 
     .cal-day {

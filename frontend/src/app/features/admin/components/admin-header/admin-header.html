@@ -2,13 +2,14 @@
     <div class="container mx-auto flex justify-between items-center">
 
         <a routerLink="" class="mr-auto text-2xl font-bold flex items-center gap-2">
-            <img src="images/factor_fit-25.webp" alt="Ronnis Gym Logo" class="w-8 h-8">
+            <img src="images/factor_fit-25.webp" alt="Ronnis Gym Logo" class="w-8 h-8 rounded-full hover:scale-160">
         </a>
 
         <nav class="flex items-center space-x-2 sm:space-x-6 text-sm sm:text-lg">
             <a routerLink="registro" routerLinkActive="active-link" class="nav-link">Registro</a>
-            <a routerLink="usuarios" routerLinkActive="active-link" class="nav-link">Usuarios</a>
-            <a routerLink="pago" routerLinkActive="active-link" class="nav-link">Pagos</a>
+            <a (click)="irAPagos2()" routerLink="usuarios" routerLinkActive="active-link" class="nav-link">Usuarios</a>
+            <a (click)="irAPagos()" routerLink="pago" routerLinkActive="active-link" class="nav-link">Pagos</a>
+
             <a routerLink="eventos" routerLinkActive="active-link" class="nav-link">Eventos</a>
             <a routerLink="instalaciones" routerLinkActive="active-link" class="nav-link">Instalaciones</a>
             <a routerLink="entrenamientos" routerLinkActive="active-link" class="nav-link">Entrenamientos</a>

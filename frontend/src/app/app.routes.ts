@@ -21,6 +21,7 @@ export const routes: Routes = [
         path: 'cliente',
         loadChildren: () => import('./features/clients/clients.module').then(m => m.ClientsModule)
     },
+
     {
         path: 'auth',
         loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)

@@ -105,6 +105,11 @@
                     class="sub-nav-btn text-xs"
                     [ngClass]="{ 'active-sub-nav': filtroStatus === 'pendiente' }"
                     (click)="filtrar('pendiente')">Pendientes</button>
+                  
+                  <button
+                    class="sub-nav-btn text-xs"
+                    [ngClass]="{ 'active-sub-nav': filtroStatus === 'proximo a vencer' }"
+                    (click)="filtrar('proximo a vencer')">Proximo a vencer</button>
                 </div>
             </div>
 
@@ -139,7 +144,9 @@
                 ? 'bg-green-500 text-white px-2 py-1 rounded-full text-sm shadow'
                 : user.status === 'inactivo'
                     ? 'bg-red-500 text-white px-2 py-1 rounded-full text-sm shadow'
-                    : 'bg-yellow-500 text-black px-2 py-1 rounded-full text-sm shadow'
+                  :user.status === 'proximo a vencer'
+                      ? 'bg-yellow-500 text-white px-2 py-1 rounded-full text-sm shadow'
+                        : 'bg-orange-500 text-black px-2 py-1 rounded-full text-sm shadow'
             "
             >
             {{ user.status || 'pendiente' }}

@@ -1,41 +1,57 @@
-@if (user) {
-<div class="container mx-auto max-w-6xl bg-gradient-to-br from-[#4a0e4e] to-[#2b103f] p-8 rounded-2xl">
+<div *ngIf="user">
+<div class="container mx-auto max-w-4xl bg-gradient-to-br from-[#FC92E5] to-[#2b103f] p-8 rounded-2xl">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
+        <!-- INFO DEL USUARIO -->
         <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 class="text-6xl font-extrabold mb-8">Estadisticas</h1>
-            <img src="https://placehold.co/200x200/4a0e4e/FFF?text=User" alt="Foto de perfil"
-                class="w-48 h-48 rounded-full object-cover border-4 border-gray-700 mb-8">
+            <h1 class="font-atomic text-pink-600 text-6xl sm:text-7xl">Estadísticas</h1>
+
+            <img 
+                [src]="user?.ruta_imagen ? user.ruta_imagen : 'https://placehold.co/200x200/4a0e4e/FFF?text=User'"
+                alt="Foto de perfil"
+                class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
+
             <div class="w-full space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="info-label">Clave</label>
-                        <div class="info-field">{{ user.key }}</div>
+                        <div class="info-field">{{ user?.clave_usuario }}</div>
                     </div>
                     <div>
                         <label class="info-label">Asistencia (Mes)</label>
                         <div class="info-field">80%</div>
                     </div>
                 </div>
+
                 <div>
                     <label class="info-label">Nombre Completo</label>
-                    <div class="info-field">{{ user.name }}</div>
+                    <div class="info-field">{{ user?.nombres }} {{ user?.apellidos }}</div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="info-label">Correo</label>
-                        <div class="info-field">{{ user.email }}</div>
+                        <label class="info-label">Peso Inicial</label>
+                        <div class="info-field">{{ user?.peso_inicial}}</div>
                     </div>
                     <div>
                         <label class="info-label">Número de Celular</label>
-                        <div class="info-field">{{ user.phone }}</div>
+                        <div class="info-field">{{ user?.telefono }}</div>
                     </div>
+                   
                 </div>
+                    <div>
+                        <label class="info-label">Correo</label>
+                        <div class="info-field">{{ user?.email }}</div>
+                    </div>
+                
             </div>
         </div>
 
+        <!-- COLUMNA DERECHA -->
         <div class="w-full">
+
+            <!-- CALENDARIO -->
             <h2 class="text-5xl font-bold text-center mb-6">Octubre</h2>
+
             <div class="grid grid-cols-7 gap-1 text-center text-sm bg-black/20 p-2 rounded-lg">
                 <div class="font-bold">Dom</div>
                 <div class="font-bold">Lun</div>
@@ -44,6 +60,8 @@
                 <div class="font-bold">Jue</div>
                 <div class="font-bold">Vie</div>
                 <div class="font-bold">Sáb</div>
+
+                <!-- (Aquí tu calendario tal cual) -->
                 <div class="cal-day"></div>
                 <div class="cal-day"></div>
                 <div class="cal-day">1</div>
@@ -79,6 +97,7 @@
                 <div class="cal-day">31</div>
             </div>
 
+            <!-- GRAFICO + INFO -->
             <div class="mt-8 grid grid-cols-2 gap-8 items-end">
                 <div>
                     <div class="flex items-end justify-around h-32 p-2 gap-2 border-b-2 border-l-2 border-white/20">
@@ -101,27 +120,40 @@
                     </div>
                 </div>
                 <div class="space-y-4">
-                    <div>
-                        <label class="info-label">Fecha de Corte</label>
-                        <div class="info-field text-center">{{ user.expiration }}</div>
+                     <div>
+                        <label class="info-label">Fecha de Inscripción</label>
+                        <div class="info-field text-center">{{ pago?.fecha_ingreso | date:'dd/MM/yyyy' }}</div>
                     </div>
                     <div>
-                        <label class="info-label">Pendiente de Pagar</label>
-                        <div class="info-field text-center text-red-400">$ 0.00</div>
+                        <label class="info-label">Fecha de Corte</label>
+                        <div class="info-field text-center">{{ pago?.fecha_corte | date:'dd/MM/yyyy' }}</div>
+                    </div>
+                    <div>
+                        <label class="info-label">Saldo a Pagar</label>
+                        <div class="info-field text-center text-red-400">
+                            $ {{ pago?.monto_pendiente ?? 0 }}
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
-<a routerLink="/admin/usuarios" class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12" />
-        <polyline points="12 19 5 12 12 5" />
-    </svg>
+<!-- BOTÓN VOLVER -->
+<a [routerLink]="['/cliente', clave_usuario, 'perfil']"
+   class="fixed bottom-6 left-6 bg-gray-900 p-4 rounded-full hover:bg-black">
+   <svg xmlns="http://www.w3.org/2000/svg"
+       width="24" height="24"
+       viewBox="0 0 24 24"
+       fill="none"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round">
+       <line x1="19" y1="12" x2="5" y2="12" />
+       <polyline points="12 19 5 12 12 5" />
+   </svg>
 </a>
-} @else {
-<p>Cargando información del usuario...</p>
-}
+</div>

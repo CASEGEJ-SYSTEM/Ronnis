@@ -12,25 +12,55 @@
             <div class="grid md:grid-cols-2 gap-4">
                 <div>
                 <label for="nombre" class="text-black font-medium">Nombre</label>
-                <input type="text" id="nombre" placeholder="Andrea" [(ngModel)]="usuario.nombres" name="nombres" required class="input-field">
+                <input type="text" id="nombres" placeholder="Juan" [(ngModel)]="usuario.nombres" (ngModelChange)="usuario.nombres = usuario.nombres.toLowerCase()"
+                    name="nombres" required class="input-field w-full">
                 </div>
                 <div>
                 <label for="apellidos" class="text-black font-medium">Apellidos</label>
-                <input type="text" id="apellidos" placeholder="Báez" [(ngModel)]="usuario.apellidos" name="apellidos" required class="input-field">
+                <input type="text" id="apellidos" placeholder="Pérez" [(ngModel)]="usuario.apellidos" (ngModelChange)="usuario.apellidos = usuario.apellidos.toLowerCase()"
+                    name="apellidos" required class="input-field w-full">
                 </div>
                 <div>
                 <label class="text-black font-medium">Fecha de Nacimiento</label>
                 <input type="date" [(ngModel)]="usuario.fecha_nacimiento" name="fecha_nacimiento" required max="{{ today }}" class="input-field">
                 </div>
                 <div>
-                <label for="numero" class="text-black font-medium">Número de teléfono</label>
-                <input type="tel" id="numero" placeholder="+52 ··· ···· ···" [(ngModel)]="usuario.telefono" name="telefono" required class="input-field">
+                    <label for="numero" class="text-black font-medium">Número de teléfono</label>
+
+                    <div class="flex gap-2">
+                        <!-- SELECT DE EXTENSIONES -->
+                        <select [(ngModel)]="telefonoExtension"
+                                name="telefonoExtension"
+                                class="input-field w-24 text-center">
+                            <option *ngFor="let ext of extensiones" [value]="ext">
+                                {{ ext }}
+                            </option>
+                        </select>
+
+                        <!-- INPUT SOLO DEL NÚMERO -->
+                        <input type="tel" id="numero" placeholder="123 456 7890"
+                            [(ngModel)]="usuario.telefono"
+                            name="telefono"
+                            required class="input-field w-full">
+                    </div>
                 </div>
+
+
             </div>
         <div class="grid md:grid-cols-2 gap-4">
             <div>
                 <label for="peso_inicial" class="text-black font-medium">Peso Inicial</label>
-                <input type="text" id="peso_inicial" placeholder="86 Kg" [(ngModel)]="usuario.peso_inicial"  name="peso_inicial" required class="input-field">
+                <div class="flex items-center gap-2">
+                    <input type="text"
+                        id="peso_inicial"
+                        placeholder="86"
+                        [(ngModel)]="usuario.peso_inicial"
+                        name="peso_inicial"
+                        required
+                        class="input-field w-full">
+
+                    <span class="text-black font-medium">Kg</span>
+                </div>
             </div>
             <div>
                 <label for="email" class="text-black font-medium">Correo electrónico</label>

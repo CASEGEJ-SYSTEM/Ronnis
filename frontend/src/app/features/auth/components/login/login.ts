@@ -47,7 +47,7 @@ export class Login {
         if (rol === 'admin1' || rol === 'admin2' || rol === 'superadmin') {
           this.router.navigate(['/admin']);
         }else if (rol === 'cliente') {
-          this.router.navigate(['/cliente']);
+          this.router.navigate([`/cliente/${response.usuario.clave_usuario}/home`]);
         } else {
           this.loginError.set('Rol no reconocido.');
         }

@@ -14,7 +14,12 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./user-detail.css']
 })
 export class UserDetail implements OnInit {
+  extensiones = [
+    '+52', '+1', '+44', '+33', '+49', '+34',
+    '+55', '+54', '+81', '+82', '+86'
+  ];
 
+  telefonoExtension = '+52';
   user: any = null;
   pago: any = null; 
   clave_usuario!: string;
@@ -41,13 +46,60 @@ export class UserDetail implements OnInit {
       next: (data) => {
         this.user = data;
 
-        if (this.user?.ruta_imagen) {
-          this.user.ruta_imagen = `${environment.apiUrl}/${this.user.ruta_imagen}`;
-        }
+        // Mostrar imagen
+        this.user.ruta_imagen_mostrar = this.user.ruta_imagen
+          ? `${environment.apiUrl}/${this.user.ruta_imagen}`
+          : null;
 
         this.user.sede = this.sede[0];
+
+        if (this.user.telefono) {
+          const partes = this.user.telefono.split(" ");
+
+          // Si viene "+52 1234567890"
+          if (partes.length > 1) {
+            this.telefonoExtension = partes[0];    // "+52"
+            this.user.telefono = partes.slice(1).join(" "); // "1234567890"
+          } else {
+            // Si viene sin extensión
+            this.user.telefono = this.user.telefono.replace(/\D/g, '');
+          }
+        }
+
+        if (this.user.peso_inicial) {
+          this.user.peso_inicial = this.user.peso_inicial
+            .toString()
+            .replace(/kg/i, '')     // Quitar "kg" sin importar mayúsculas
+            .trim();
+        }
       }
     });
+  }
+
+
+  buscar() {
+    if (this.busqueda.trim().length < 2) {
+      this.resultadosBusqueda = [];
+      return;
+    }
+
+    this.usuarioService.buscarUsuariosDeSede(this.busqueda, this.user?.sede).subscribe({
+      next: (data: any[]) => {
+        this.resultadosBusqueda = data;
+      },
+      error: () => {
+        this.resultadosBusqueda = [];
+      }
+    });
+  }
+
+  seleccionarUsuario(usuario: any) {
+    this.resultadosBusqueda = [];
+    this.busqueda = usuario.nombres + ' ' + usuario.apellidos;
+    this.clave_usuario = usuario.clave_usuario;
+
+    this.cargarUsuario(this.clave_usuario);
+    this.cargarPago(this.clave_usuario);
   }
 
   cargarPago(clave_usuario: string) {
@@ -61,92 +113,110 @@ export class UserDetail implements OnInit {
     });
   }
 
-  // ------------ CALCULAR FECHA DE PAGO IGUAL QUE REGISTRO -----------------
-  private calcularFechaPago(fecha: Date): { fechaPago: Date, tipo_pago: string } {
-    const day = fecha.getDate();
-    const mes = fecha.getMonth();
-    const anio = fecha.getFullYear();
-
-    let fechaPago: Date;
-    let tipo_pago: string;
-
-    if (day >= 1 && day <= 6 || day >= 28) {
-      fechaPago = day >= 28
-        ? new Date(anio, mes + 1, 1)
-        : new Date(anio, mes, 1);
-      tipo_pago = 'Mensual';
-    } else if (day >= 15 && day <= 21) {
-      fechaPago = new Date(anio, mes, 15);
-      tipo_pago = 'Quincenal';
-    } else {
-      fechaPago = new Date(anio, mes + 1, 1);
-      tipo_pago = 'Mensual';
-    }
-
-    return { fechaPago, tipo_pago };
-  }
-
-  
   guardarCambios() {
-    const hoy = new Date();
+      const hoy = new Date();
 
-    // Si NO tiene registro en pagos → CREARLO
-    if (!this.pago) {
+      // ---------------------------
+      // Peso inicial → mantener string + agregar "Kg" si falta
+      // ---------------------------
+      let pesoFinal = this.user.peso_inicial?.trim() || '';
 
-      const { fechaPago, tipo_pago } = this.calcularFechaPago(hoy);
+      if (pesoFinal !== '' && !pesoFinal.toLowerCase().includes('kg')) {
+          pesoFinal = `${pesoFinal} Kg`;
+      }
+      this.user.peso_inicial = pesoFinal;
 
-      const dataPago = {
-        clave_cliente: this.clave_usuario,
-        fecha_ingreso: hoy.toISOString(),
-        fecha_corte: fechaPago.toISOString(),
-        Tipo_pago: tipo_pago,
-        monto_pendiente: 500
-      };
+      // ---------------------------
+      // Nombres y apellidos
+      // ---------------------------
+      this.user.nombres = this.user.nombres?.trim().toLowerCase() || '';
+      this.user.apellidos = this.user.apellidos?.trim().toLowerCase() || '';
 
-      this.usuarioService.registrarPago(dataPago).subscribe({
-        next: () => {
-          console.log("Pago inicial creado");
-          this.actualizarUsuario();
-        },
-        error: () => alert("Error al crear pago inicial")
-      });
+      // ---------------------------
+      // Teléfono
+      // ---------------------------
+      const numeroSolo = this.user.telefono?.replace(/\D/g, '') || '';
+      this.user.telefono = this.telefonoExtension
+          ? `${this.telefonoExtension} ${numeroSolo}`
+          : numeroSolo;
 
-      return;
+      // ---------------------------
+      // Objeto final
+      // ---------------------------
+      const usuarioActualizado = { ...this.user };
+
+      if (!this.user.ruta_imagen) {
+          usuarioActualizado.ruta_imagen = this.user.ruta_imagen_backup ?? null;
+      }
+
+      // Contraseña solo si se escribe
+      if (!this.user.password || this.user.password.trim() === '') {
+          delete usuarioActualizado.password;
+      }
+
+      // ---------------------------
+      // Crear pago si no tiene sede
+      // ---------------------------
+      if (!this.user?.sede || this.user.sede === '' || this.user.sede === null) {
+          const { fechaPago, tipo_pago } = this.calcularFechaPago(hoy);
+
+          const dataPago = {
+              clave_cliente: this.clave_usuario,
+              fecha_ingreso: hoy.toISOString(),
+              fecha_corte: fechaPago.toISOString(),
+              Tipo_pago: tipo_pago,
+              monto_pendiente: 500
+          };
+
+          this.usuarioService.registrarPago(dataPago).subscribe({
+              next: () => this.actualizarUsuario(usuarioActualizado),
+              error: () => alert("Error al crear el pago inicial")
+          });
+          return;
+      }
+
+      // ---------------------------
+      // Crear pago si no existe
+      // ---------------------------
+      if (!this.pago) {
+          const { fechaPago, tipo_pago } = this.calcularFechaPago(hoy);
+
+          const dataPago = {
+              clave_cliente: this.clave_usuario,
+              fecha_ingreso: hoy.toISOString(),
+              fecha_corte: fechaPago.toISOString(),
+              Tipo_pago: tipo_pago,
+              monto_pendiente: 500
+          };
+
+          this.usuarioService.registrarPago(dataPago).subscribe({
+              next: () => this.actualizarUsuario(usuarioActualizado),
+              error: () => alert("Error al crear el pago")
+          });
+          return;
+      }
+
+      // ---------------------------
+      // Ya tiene pago → actualizar solo usuario
+      // ---------------------------
+      this.actualizarUsuario(usuarioActualizado);
+  }
+
+
+
+
+
+
+    actualizarUsuario(usuarioActualizado: any) {
+      this.usuarioService.actualizarUsuario(this.clave_usuario, usuarioActualizado)
+        .subscribe({
+          next: () => {
+            console.log("Usuario actualizado");
+            alert("Datos guardados correctamente");
+          },
+          error: () => alert("Error al actualizar usuario")
+        });
     }
-
-    // Si ya tenía pago → solo actualizar usuario
-    this.actualizarUsuario();
-  }
-
-  private actualizarUsuario() {
-    this.usuarioService.actualizarUsuario(this.clave_usuario, this.user)
-      .subscribe({
-        next: () => alert("Usuario actualizado"),
-        error: () => alert("Error al actualizar usuario")
-      });
-  }
-
-  // ---------- BUSQUEDA -------------------
-  buscar() {
-    if (this.busqueda.trim().length < 2) {
-      this.resultadosBusqueda = [];
-      return;
-    }
-
-    this.usuarioService.buscarUsuariosDeSede(this.busqueda, this.user?.sede).subscribe({
-      next: (data: any[]) => this.resultadosBusqueda = data
-    });
-  }
-
-  seleccionarUsuario(usuario: any) {
-    this.resultadosBusqueda = [];
-    this.busqueda = usuario.nombres;
-    this.busqueda = '';   
-    this.clave_usuario = usuario.clave_usuario;
-
-    this.cargarUsuario(this.clave_usuario);
-    this.cargarPago(this.clave_usuario);
-  }
 
   subirFoto(event: any) {
     const archivo = event.target.files[0];
@@ -158,10 +228,46 @@ export class UserDetail implements OnInit {
     this.usuarioService.subirFoto(this.clave_usuario, formData)
       .subscribe({
         next: (resp: any) => {
-          this.user.ruta_imagen = `${environment.apiUrl}/${resp.ruta_imagen}`;
+          // Guardar ruta tal como devuelve el backend
+          this.user.ruta_imagen = resp.ruta_imagen;
+          this.user.ruta_imagen_backup = resp.ruta_imagen;
+
+          // Solo para mostrar en la vista
+          this.user.ruta_imagen_mostrar = `${environment.apiUrl}/${resp.ruta_imagen}`;
+
           alert("Foto actualizada");
         }
       });
   }
 
+  private formatLocalDate(fecha: Date): string {
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2,'0');
+    const d = String(fecha.getDate()).padStart(2,'0');
+    const h = String(fecha.getHours()).padStart(2,'0');
+    const min = String(fecha.getMinutes()).padStart(2,'0');
+    const s = String(fecha.getSeconds()).padStart(2,'0');
+    return `${y}-${m}-${d} ${h}:${min}:${s}`;
+  }
+
+  private calcularFechaPago(fecha: Date): { fechaPago: Date, tipo_pago: string } {
+    const day = fecha.getDate();
+    const mes = fecha.getMonth();
+    const anio = fecha.getFullYear();
+    let fechaPago: Date;
+    let tipo_pago: string;
+
+    if ((day >= 1 && day <= 6) || day >= 28) {
+      fechaPago = day >= 28 ? new Date(anio, mes + 1, 1) : new Date(anio, mes, 1);
+      tipo_pago = 'Mensual';
+    } else if (day >= 15 && day <= 21) {
+      fechaPago = new Date(anio, mes, 15);
+      tipo_pago = 'Quincenal';
+    } else {
+      fechaPago = new Date(anio, mes + 1, 1);
+      tipo_pago = 'Mensual';
+    }
+
+    return { fechaPago, tipo_pago };
+  }
 }

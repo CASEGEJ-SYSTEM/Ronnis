@@ -1,22 +1,36 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ClientsLayout } from './clients-layout/clients-layout';
+import { ClientHomeLayout } from './client-home-layout/client-home-layout';
+import { ClientDefaultLayout } from './client-default-layout/client-default-layout';
+
 import { ClientsProfile } from './clients-profile/clients-profile';
 import { ClientsStats } from './clients-stats/clients-stats';
-
+import { HomeClients } from './home_clients/home_clients';
 
 const routes: Routes = [
+
     {
-        path: '',
-        component: ClientsLayout,
+        path: ':clave_usuario',
         children: [
-            { path: 'clients', component:ClientsProfile },
-            { path: 'usuarios', component: ClientsStats },
+            
             {
-                path: '', // La ruta por defecto (que es /admin) redirige a /admin/registro
-                redirectTo: 'clients',
-                pathMatch: 'full'
+                path: 'home',
+                component: ClientHomeLayout,
+                children: [
+                    { path: '', component: HomeClients }
+                ]
+            },
+
+            {
+                path: '',
+                component: ClientDefaultLayout,
+                children: [
+                    { path: 'perfil', component: ClientsProfile },
+                    { path: 'estadisticas', component: ClientsStats },
+
+                    { path: '', redirectTo: 'perfil', pathMatch: 'full' }
+                ]
             }
         ]
     }
@@ -26,4 +40,4 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class ClientsRoutingModule { }
+export class ClientsRoutingModule {}

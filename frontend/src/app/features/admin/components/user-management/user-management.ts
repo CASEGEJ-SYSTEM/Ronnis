@@ -92,13 +92,15 @@ export class UserManagement implements OnInit {
   get usersFiltrados() {
     return this.usersData.filter(user => {
 
+      // Excluir usuarios con status 'pendiente'
+      if (user.status === 'pendiente' || user.status === 'proximo a vencer') return false;
+
       // FILTRO POR STATUS
       const pasaStatus =
         !this.filtroStatus ||
-        (this.filtroStatus === 'pendiente'
-          ? !user.status || user.status === '' || user.status === 'ninguno' || user.status === 'pendiente'
+        (this.filtroStatus === 'sin asignar'
+          ? !user.status || user.status === '' || user.status === 'ninguno' || user.status === 'sin asignar'
           : user.status === this.filtroStatus);
-
 
       if (!pasaStatus) return false;
 
@@ -109,10 +111,10 @@ export class UserManagement implements OnInit {
         user.clave_usuario?.toString().toLowerCase().includes(texto) ||
         `${user.nombres} ${user.apellidos}`.toLowerCase().includes(texto) ||
         user.status?.toLowerCase().includes(texto) ||
-        (!user.status && texto.includes('pendiente'))
+        (!user.status && texto.includes('sin asignar'))
       );
     });
   }
 
 
-}
+  }

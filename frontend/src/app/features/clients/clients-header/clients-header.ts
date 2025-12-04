@@ -1,18 +1,30 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-clients-header',
     standalone: true,
-    imports: [RouterLink, RouterLinkActive],
+    imports: [RouterLink],
     templateUrl: './clients-header.html',
     styleUrl: './clients-header.css',
 })
 export class ClientsHeader {
-    constructor(private router: Router) { }
+
+    claveUsuario = '';
+
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute 
+    ) {}
+
+    ngOnInit() {
+        // Leer el parámetro del padre (ClientsLayout)
+        this.claveUsuario = this.route.snapshot.paramMap.get('clave_usuario') ?? '';
+    }
 
     logout() {
-        // Simulación de volver a la página del login al cerrar sesión
+        // Limpiar datos si quieres
+        localStorage.clear();
         this.router.navigate(['/auth/login']);
     }
 }

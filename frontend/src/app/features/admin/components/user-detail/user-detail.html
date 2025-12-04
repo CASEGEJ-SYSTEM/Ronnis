@@ -42,9 +42,9 @@
             <h1 class="font-atomic text-pink-600 text-7xl mb-8">Usuario</h1>
             <div class="relative inline-block">
                <img 
-                    [src]="user?.ruta_imagen ? user.ruta_imagen : 'https://placehold.co/200x200/4a0e4e/FFF?text=User'"
+                    [src]="user?.ruta_imagen_mostrar ? user.ruta_imagen_mostrar : 'https://placehold.co/200x200/4a0e4e/FFF?text=User'"
                     alt="Foto de perfil"
-                    class=" w-52 h-52 rounded-full object-cover border-4 border-gray-700">
+                    class="w-52 h-52 rounded-full object-cover border-4 border-gray-700">
                 <button 
                     (click)="fileInput.click()"
                     class="absolute bottom-2 right-2 bg-pink-600 p-3 rounded-full hover:bg-pink-700">
@@ -85,15 +85,40 @@
                         <label for="fecha-nacimiento" class="text-black font-medium">Fecha de Nacimiento</label>
                         <input type="text" [(ngModel)]="user.fecha_nacimiento" name="fecha_nacimiento" class="input-field">
                     </div>
-                    <div>
-                        <label for="telefono" class="text-black font-medium">Telefono</label>
-                        <input type="tel" [(ngModel)]="user.telefono" name="telefono" class="input-field">
+                <div>
+                    <label for="numero" class="text-black font-medium">Número de teléfono</label>
+
+                    <div class="flex gap-2">
+                        <!-- SELECT DE EXTENSIONES -->
+                        <select [(ngModel)]="telefonoExtension"
+                                name="telefonoExtension"
+                                class="input-field w-24 text-center">
+                            <option *ngFor="let ext of extensiones" [value]="ext">
+                                {{ ext }}
+                            </option>
+                        </select>
+
+                        <!-- INPUT SOLO DEL NÚMERO -->
+                        <input type="tel" id="numero" placeholder="123 456 7890"
+                            [(ngModel)]="user.telefono"
+                            name="telefono"
+                            required class="input-field w-full">
                     </div>
+                </div>
                     <div>
                         <label for="peso_inicial" class="text-black font-medium">Peso Inicial</label>
-                        <input type="text" [(ngModel)]="user.peso_inicial" name="peso_inicial" class="input-field" required class="input-field w-full">
-                    </div>
-                    <div>
+                        <div class="flex items-center gap-2">
+                            <input type="text"
+                                id="peso_inicial"
+                                placeholder="86"
+                                [(ngModel)]="user.peso_inicial"
+                                name="peso inicial"
+                                required
+                                class="input-field w-full">
+
+                            <span class="text-black font-medium">Kg</span>
+                        </div>
+                    </div>                    <div>
                         <label for="correo" class="text-black font-medium">Correo electrónico</label>
                         <input type="email" [(ngModel)]="user.email" name="email" class="input-field" required class="input-field w-full">
                     </div>

@@ -38,4 +38,10 @@ actualizarEventos(clave: string, formData: FormData) {
 eliminarEventos(clave: string) {
   return this.http.delete<any>(`${environment.apiUrl}/api/eventos/${clave}`);
 }
+
+getImagenEvento(ruta: string) {
+  if (!ruta) return 'assets/no-image.png';
+  return `${environment.apiUrl}/${ruta}`;
+}
+
 }

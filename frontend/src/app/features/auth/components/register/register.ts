@@ -16,6 +16,13 @@ export class Register {
   
   today: string = new Date().toISOString().split('T')[0];
 
+  extensiones = [
+    '+52', '+1', '+44', '+33', '+49', '+34',
+    '+55', '+54', '+81', '+82', '+86'
+  ];
+
+  telefonoExtension = '+52'; // valor por defecto
+
   constructor(
     private http: HttpClient,
     private router: Router
@@ -23,7 +30,6 @@ export class Register {
 
   handleRegister(formValue: any) {
 
-    // Validaciones del lado del front
     if (formValue.password !== formValue.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
@@ -34,21 +40,22 @@ export class Register {
       return;
     }
 
-    // Payload que espera el backend
+    // 📌 Concatenar extensión + teléfono
+    const telefonoCompleto = `${this.telefonoExtension} ${formValue.phone}`;
+
     const payload = {
-      nombres            : formValue.firstName,
-      apellidos          : formValue.lastName,
+      nombres            : formValue.firstName.toLowerCase().trim(),
+      apellidos          : formValue.lastName.toLowerCase().trim(),
       fecha_nacimiento   : formValue.birthDate,
-      telefono           : formValue.phone,
+      telefono           : telefonoCompleto,
       email              : formValue.email,
       password           : formValue.password,
-      
-      // valores por defecto
+
       sede               : "ninguno",
-      status             : "pendiente",
+      status             : "sin asignar",
       rol                : "cliente",
       peso_inicial       : "0 kg",
-      
+
       ruta_imagen        : null,
       qr_imagen          : null
     };
@@ -64,16 +71,9 @@ export class Register {
 
         let mensaje = 'Error inesperado, intenta nuevamente.';
 
-        // Error 422 :(validación del backend)
         if (error.status === 422) {
-
-          if (error.error?.errors?.email) {
-            mensaje = 'El correo ya está registrado.';
-          }
-
-          if (error.error?.errors?.telefono) {
-            mensaje = 'El teléfono no es válido.';
-          }
+          if (error.error?.errors?.email) mensaje = 'El correo ya está registrado.';
+          if (error.error?.errors?.telefono) mensaje = 'El teléfono no es válido.';
         }
 
         alert(mensaje);
