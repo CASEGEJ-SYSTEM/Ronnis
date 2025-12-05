@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { Entrenamiento } from '../models/training.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,25 +18,25 @@ export class EntrenamientosService {
 //               entrenamientos
 // =====================================
 
-getEntrenamientos(sede: string = '') {
+getEntrenamientos(sede: string = ''): Observable<Entrenamiento[]> {
   let params: any = {};
   if (sede !== '') params.sede = sede;
-  return this.http.get<any[]>(`${environment.apiUrl}/api/entrenamientos`, { params });
+  return this.http.get<Entrenamiento[]>(`${environment.apiUrl}/api/entrenamientos`, { params });
 }
 
-getEntrenamientosByClave(clave: string) {
-  return this.http.get<any>(`${environment.apiUrl}/api/entrenamientos/${clave}`);
+getEntrenamientosByClave(clave: string): Observable<Entrenamiento> {
+  return this.http.get<Entrenamiento>(`${environment.apiUrl}/api/entrenamientos/${clave}`);
 }
 
-registrarEntrenamientos(formData: FormData) {
-  return this.http.post<any>(`${environment.apiUrl}/api/entrenamientos`, formData);
+registrarEntrenamientos(formData: FormData): Observable<Entrenamiento> {
+  return this.http.post<Entrenamiento>(`${environment.apiUrl}/api/entrenamientos`, formData);
 }
 
-actualizarEntrenamientos(clave: string, formData: FormData) {
-  return this.http.post<any>(`${environment.apiUrl}/api/entrenamientos/${clave}?_method=PUT`, formData);
+actualizarEntrenamientos(clave: string, formData: FormData): Observable<Entrenamiento> {
+  return this.http.post<Entrenamiento>(`${environment.apiUrl}/api/entrenamientos/${clave}?_method=PUT`, formData);
 }
 
-eliminarEntrenamientos(clave: string) {
+eliminarEntrenamientos(clave: string): Observable<any> {
   return this.http.delete<any>(`${environment.apiUrl}/api/entrenamientos/${clave}`);
 }
 }

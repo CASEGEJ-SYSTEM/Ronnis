@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EventosService } from '../../../../core/services/eventos.service';
 import { environment } from '../../../../../environments/environment';
+import { Evento } from '../../../../core/models/evento.model';
 
 @Component({
   selector: 'app-events',
@@ -12,12 +13,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class Events implements OnInit {
 
-  eventsData: {
-    clave_eventos: string;
-    titulo: string;
-    description: string;
-    image: string;
-  }[] = [];
+  eventsData: Evento[] = [];
 
   sede = localStorage.getItem('sede') ?? '';
 
@@ -38,11 +34,9 @@ export class Events implements OnInit {
           return;
         }
 
-        this.eventsData = data.map((p: any) => ({
-          clave_eventos: p.clave_eventos,
-          titulo: p.titulo,
-          description: p.descripcion ?? '',
-          image: p.ruta_imagen
+        this.eventsData = data.map((p: Evento) => ({
+          ...p,
+          ruta_imagen: p.ruta_imagen
             ? `${environment.apiUrl}/${p.ruta_imagen}`
             : 'assets/no-image.png'
         }));

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InstalacionesService } from '../../../../core/services/instalaciones.service';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
+import { Instalacion } from '../../../../core/models/facility.model';
 
 @Component({
     selector: 'app-instalaciones',
@@ -12,7 +13,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class Instalaciones implements OnInit {
 
-    instalacionesData: any[] = [];
+    instalacionesData: Instalacion[] = [];
     sede = localStorage.getItem('sede') ?? '';
 
     @ViewChild('carousel') carousel!: ElementRef;
@@ -34,11 +35,9 @@ cargarinstalaciones() {
                 return;
             }
 
-            this.instalacionesData = data.map((p: any) => ({
-                clave_instalaciones: p.clave_instalaciones,
-                titulo: p.titulo,
-                description: p.descripcion ?? '',
-                image: p.ruta_imagen
+            this.instalacionesData = data.map((p: Instalacion) => ({
+                ...p,
+                ruta_imagen: p.ruta_imagen
                     ? `${environment.apiUrl}/${p.ruta_imagen}`
                     : 'assets/no-image.png'
             }));

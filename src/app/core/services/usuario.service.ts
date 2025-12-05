@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { Usuario } from '../models/user.model';
+import { Entrenador } from '../models/trainer.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,38 +21,38 @@ export class UsuarioService {
   //               USUARIOS
   // =====================================
 
-  getUsuarios(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(this.apiUrl);
   }
 
-  getUsuarioByClave(clave_usuario: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${clave_usuario}`);
+  getUsuarioByClave(clave_usuario: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/${clave_usuario}`);
   }
 
-  registrarUsuario(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
+  registrarUsuario(data: any): Observable<Usuario> {
+    return this.http.post<Usuario>(this.apiUrl, data);
   }
 
-  actualizarUsuario(clave_usuario: string, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${clave_usuario}`, data);
+  actualizarUsuario(clave_usuario: string, data: any): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/${clave_usuario}`, data);
   }
 
   //eliminarUsuario(clave_usuario: string): Observable<any> {
     //return this.http.delete<any>(`${this.apiUrl}/${clave_usuario}`);
   //}
 
-  buscarUsuarios(texto: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/usuarios/buscar/general/${texto}`);
+  buscarUsuarios(texto: string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${environment.apiUrl}/api/usuarios/buscar/general/${texto}`);
   }
 
 
-  getUsuariosPorSede(sede: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/por-sede`, { params: { sede } });
+  getUsuariosPorSede(sede: string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${this.apiUrl}/por-sede`, { params: { sede } });
   }
 
 
-  buscarUsuariosDeSede(texto: string, sede: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/usuarios/buscar/sede`, {
+  buscarUsuariosDeSede(texto: string, sede: string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${environment.apiUrl}/api/usuarios/buscar/sede`, {
       params: { texto, sede }
     });
   }
@@ -105,18 +107,18 @@ export class UsuarioService {
   // =====================================
  
 
-  registrarPersonal(data: FormData) {
-    return this.http.post<any>(`${environment.apiUrl}/api/personal`, data);
+  registrarPersonal(data: FormData): Observable<Entrenador> {
+    return this.http.post<Entrenador>(`${environment.apiUrl}/api/personal`, data);
   }
 
 
-  getPersonalByClave(clave: string) {
-    return this.http.get<any>(`${environment.apiUrl}/api/personal/${clave}`);
+  getPersonalByClave(clave: string): Observable<Entrenador> {
+    return this.http.get<Entrenador>(`${environment.apiUrl}/api/personal/${clave}`);
   }
-  getPersonal(sede: string = '') {
+  getPersonal(sede: string = ''): Observable<Entrenador[]> {
     let params: any = {};
     if (sede !== '') params.sede = sede;
-    return this.http.get<any[]>(`${environment.apiUrl}/api/personal`, { params });
+    return this.http.get<Entrenador[]>(`${environment.apiUrl}/api/personal`, { params });
   }
 
 
@@ -124,12 +126,12 @@ export class UsuarioService {
     return this.http.delete(`${environment.apiUrl}/api/personal/${clave}`);
   }
 
- actualizarPersonal(clave: string, formData: FormData) {
-    return this.http.post(`${environment.apiUrl}/api/personal/${clave}?_method=PUT`, formData);
+ actualizarPersonal(clave: string, formData: FormData): Observable<Entrenador> {
+    return this.http.post<Entrenador>(`${environment.apiUrl}/api/personal/${clave}?_method=PUT`, formData);
   }
 
-  getPersonalPorSede(sede: string) {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/personal`, { params: { sede } });
+  getPersonalPorSede(sede: string): Observable<Entrenador[]> {
+    return this.http.get<Entrenador[]>(`${environment.apiUrl}/api/personal`, { params: { sede } });
   }
 
 

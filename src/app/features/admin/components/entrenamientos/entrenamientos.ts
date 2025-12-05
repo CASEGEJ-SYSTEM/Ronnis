@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EntrenamientosService } from '../../../../core/services/entrenamientos.service';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
+import { Entrenamiento } from '../../../../core/models/training.model';
 
 @Component({
     selector: 'app-entrenamientos',
@@ -12,7 +13,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class Entrenamientos implements OnInit {
 
-    entrenamientosData: any[] = [];
+    entrenamientosData: Entrenamiento[] = [];
     sede = localStorage.getItem('sede') ?? '';
 
     @ViewChild('carousel') carousel!: ElementRef;
@@ -34,11 +35,9 @@ cargarEntrenamientos() {
                 return;
             }
 
-            this.entrenamientosData = data.map((p: any) => ({
-                clave_entrenamientos: p.clave_entrenamientos,
-                titulo: p.titulo,
-                description: p.descripcion ?? '',
-                image: p.ruta_imagen
+            this.entrenamientosData = data.map((p: Entrenamiento) => ({
+                ...p,
+                ruta_imagen: p.ruta_imagen
                     ? `${environment.apiUrl}/${p.ruta_imagen}`
                     : 'assets/no-image.png'
             }));
